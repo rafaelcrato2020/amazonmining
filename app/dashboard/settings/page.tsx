@@ -24,10 +24,10 @@ export default function SettingsPage() {
 
   // Estados para os formulários
   const [profileData, setProfileData] = useState({
-    firstName: "João",
-    lastName: "Silva",
-    email: "joao@example.com",
-    phone: "+55 11 98765-4321",
+    firstName: "Usuário",
+    lastName: "",
+    email: "usuario@exemplo.com",
+    phone: "",
   })
 
   const [passwordData, setPasswordData] = useState({

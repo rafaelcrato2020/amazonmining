@@ -212,14 +212,9 @@ export default function RewardsPage() {
                           </p>
                           <div className="mt-3 flex items-center gap-2">
                             <div className="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
-                              <div
-                                className={`h-full bg-gradient-to-r ${plan.color}`}
-                                style={{ width: plan.id === "v2" ? "40%" : "20%" }}
-                              ></div>
+                              <div className={`h-full bg-gradient-to-r ${plan.color}`} style={{ width: "0%" }}></div>
                             </div>
-                            <span className="text-xs text-slate-400">
-                              {plan.id === "v2" ? "2/5 indicados" : "2/10 cadastros"}
-                            </span>
+                            <span className="text-xs text-slate-400">0/5 indicados</span>
                           </div>
                         </div>
                       )}
@@ -234,8 +229,8 @@ export default function RewardsPage() {
                       <CardTitle className="text-sm font-medium text-slate-400">Total de Indicados</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold text-white">24</div>
-                      <p className="text-xs text-emerald-400 mt-1">+3 nos últimos 7 dias</p>
+                      <div className="text-2xl font-bold text-white">0</div>
+                      <p className="text-xs text-emerald-400 mt-1">+0 nos últimos 7 dias</p>
                     </CardContent>
                   </Card>
                   <Card className="bg-slate-900 border-slate-800">
@@ -243,8 +238,8 @@ export default function RewardsPage() {
                       <CardTitle className="text-sm font-medium text-slate-400">Indicados Ativos</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold text-white">18</div>
-                      <p className="text-xs text-slate-400 mt-1">75% de taxa de ativação</p>
+                      <div className="text-2xl font-bold text-white">0</div>
+                      <p className="text-xs text-slate-400 mt-1">0% de taxa de ativação</p>
                     </CardContent>
                   </Card>
                   <Card className="bg-slate-900 border-slate-800">
@@ -252,8 +247,8 @@ export default function RewardsPage() {
                       <CardTitle className="text-sm font-medium text-slate-400">Ganhos com Indicações</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold text-white">$345.67</div>
-                      <p className="text-xs text-emerald-400 mt-1">+$42.50 esta semana</p>
+                      <div className="text-2xl font-bold text-white">$0.00</div>
+                      <p className="text-xs text-emerald-400 mt-1">+$0.00 esta semana</p>
                     </CardContent>
                   </Card>
                 </div>

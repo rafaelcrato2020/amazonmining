@@ -44,7 +44,7 @@ export function DashboardHeader() {
 
         <Avatar className="h-10 w-10 border-2 border-emerald-500 ring-2 ring-slate-700 transition-all duration-300 hover:ring-emerald-400">
           <AvatarImage src={userAvatar || "/images/avatar.png"} alt="Usuário" />
-          <AvatarFallback className="bg-slate-700 text-emerald-400 text-sm">AM</AvatarFallback>
+          <AvatarFallback className="bg-slate-700 text-emerald-400 text-sm"></AvatarFallback>
         </Avatar>
       </div>
     </header>

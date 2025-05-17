@@ -21,7 +21,7 @@ export default function WithdrawPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [copied, setCopied] = useState(false)
 
-  const availableBalance = 1234.56
+  const availableBalance = 0
   const fee = amount ? Number.parseFloat(amount) * 0.06 : 0
   const finalAmount = amount ? Number.parseFloat(amount) - fee : 0
   const minWithdraw = 10
@@ -189,7 +189,7 @@ export default function WithdrawPage() {
                     <div className="bg-slate-800/50 rounded-lg p-4">
                       <div className="flex items-center justify-between mb-2">
                         <div>
-                          <p className="text-white font-medium">$150.00</p>
+                          <p className="text-white font-medium">$0.00</p>
                           <p className="text-xs text-slate-400">10 Mai 2025, 14:32</p>
                         </div>
                         <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">Concluído</Badge>
@@ -205,7 +205,7 @@ export default function WithdrawPage() {
                     <div className="bg-slate-800/50 rounded-lg p-4">
                       <div className="flex items-center justify-between mb-2">
                         <div>
-                          <p className="text-white font-medium">$320.00</p>
+                          <p className="text-white font-medium">$0.00</p>
                           <p className="text-xs text-slate-400">28 Abr 2025, 09:15</p>
                         </div>
                         <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">Concluído</Badge>
