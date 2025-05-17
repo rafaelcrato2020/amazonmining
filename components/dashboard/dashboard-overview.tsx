@@ -34,15 +34,15 @@ export function DashboardOverview() {
                 <Wallet className="h-5 w-5 text-emerald-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-white">$0.00</div>
+                <div className="text-2xl font-bold text-white">$1,234.56</div>
                 <p className="text-xs text-slate-400 mt-1">Atualizado hoje</p>
               </CardContent>
             </Card>
 
             <StatCard
               title="Ganhos Totais"
-              value="$0.00"
-              description="Atualizado hoje"
+              value="$1,234.56"
+              description="+12.5% em relação a ontem"
               icon={<DollarSign className="h-5 w-5 text-emerald-400" />}
             />
             <StatCard
@@ -54,19 +54,19 @@ export function DashboardOverview() {
                 <div className="mt-2 pt-2 border-t border-slate-800">
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-slate-400">Saldo Investido:</span>
-                    <span className="text-sm font-medium text-white">$0.00</span>
+                    <span className="text-sm font-medium text-white">$5,000.00</span>
                   </div>
                   <div className="flex items-center justify-between mt-1">
                     <span className="text-xs text-slate-400">Rendimento Diário:</span>
-                    <span className="text-sm font-medium text-emerald-400">$0.00</span>
+                    <span className="text-sm font-medium text-emerald-400">$225.00</span>
                   </div>
                 </div>
               }
             />
             <StatCard
               title="Indicações"
-              value="0"
-              description="Atualizado hoje"
+              value="24"
+              description="3 novos hoje"
               icon={<Users className="h-5 w-5 text-emerald-400" />}
             />
             <StatCard
@@ -87,15 +87,15 @@ export function DashboardOverview() {
                 <Wallet className="h-5 w-5 text-emerald-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-white">$0.00</div>
+                <div className="text-2xl font-bold text-white">$1,234.56</div>
                 <p className="text-xs text-slate-400 mt-1">Atualizado esta semana</p>
               </CardContent>
             </Card>
 
             <StatCard
               title="Ganhos Totais"
-              value="$0.00"
-              description="Atualizado esta semana"
+              value="$8,765.43"
+              description="+8.3% em relação à semana passada"
               icon={<DollarSign className="h-5 w-5 text-emerald-400" />}
             />
             <StatCard
@@ -107,19 +107,19 @@ export function DashboardOverview() {
                 <div className="mt-2 pt-2 border-t border-slate-800">
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-slate-400">Saldo Investido:</span>
-                    <span className="text-sm font-medium text-white">$0.00</span>
+                    <span className="text-sm font-medium text-white">$5,000.00</span>
                   </div>
                   <div className="flex items-center justify-between mt-1">
                     <span className="text-xs text-slate-400">Rendimento Semanal:</span>
-                    <span className="text-sm font-medium text-emerald-400">$0.00</span>
+                    <span className="text-sm font-medium text-emerald-400">$1,575.00</span>
                   </div>
                 </div>
               }
             />
             <StatCard
               title="Indicações"
-              value="0"
-              description="Atualizado esta semana"
+              value="42"
+              description="12 novos esta semana"
               icon={<Users className="h-5 w-5 text-emerald-400" />}
             />
             <StatCard
@@ -140,15 +140,15 @@ export function DashboardOverview() {
                 <Wallet className="h-5 w-5 text-emerald-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-white">$0.00</div>
+                <div className="text-2xl font-bold text-white">$1,234.56</div>
                 <p className="text-xs text-slate-400 mt-1">Atualizado este mês</p>
               </CardContent>
             </Card>
 
             <StatCard
               title="Ganhos Totais"
-              value="$0.00"
-              description="Atualizado este mês"
+              value="$32,456.78"
+              description="+15.2% em relação ao mês passado"
               icon={<DollarSign className="h-5 w-5 text-emerald-400" />}
             />
             <StatCard
@@ -160,19 +160,19 @@ export function DashboardOverview() {
                 <div className="mt-2 pt-2 border-t border-slate-800">
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-slate-400">Saldo Investido:</span>
-                    <span className="text-sm font-medium text-white">$0.00</span>
+                    <span className="text-sm font-medium text-white">$5,000.00</span>
                   </div>
                   <div className="flex items-center justify-between mt-1">
                     <span className="text-xs text-slate-400">Rendimento Mensal:</span>
-                    <span className="text-sm font-medium text-emerald-400">$0.00</span>
+                    <span className="text-sm font-medium text-emerald-400">$6,750.00</span>
                   </div>
                 </div>
               }
             />
             <StatCard
               title="Indicações"
-              value="0"
-              description="Atualizado este mês"
+              value="156"
+              description="45 novos este mês"
               icon={<Users className="h-5 w-5 text-emerald-400" />}
             />
             <StatCard

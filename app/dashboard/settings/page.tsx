@@ -1,38 +1,33 @@
 "use client"
 
-import { useState } from "react"
 import type React from "react"
 
-import { useRef, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
+import { useState, useRef, useEffect } from "react"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Switch } from "@/components/ui/switch"
-import { Mail, Lock, Bell, Shield, Camera, Check, Loader2, Save } from "lucide-react"
+import { User, Mail, Lock, Bell, Shield, Camera, Check, Loader2 } from "lucide-react"
 import { useSidebar } from "@/contexts/sidebar-context"
 import { cn } from "@/lib/utils"
 import { DashboardHeader } from "@/components/dashboard/dashboard-header"
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar"
-import { useToast } from "@/components/ui/use-toast"
-import { useAuth } from "@/contexts/auth-context"
-import { createClientComponentClient } from "@/lib/supabase"
 
 export default function SettingsPage() {
   const { isOpen } = useSidebar()
-  const { profile, refreshProfile } = useAuth()
-  const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
+  const [isSaved, setIsSaved] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Estados para os formulários
   const [profileData, setProfileData] = useState({
-    firstName: "Usuário",
-    lastName: "",
-    email: "usuario@exemplo.com",
-    phone: "",
+    firstName: "João",
+    lastName: "Silva",
+    email: "joao@example.com",
+    phone: "+55 11 98765-4321",
   })
 
   const [passwordData, setPasswordData] = useState({
@@ -53,14 +48,6 @@ export default function SettingsPage() {
   })
 
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
-
-  const [isSaved, setIsSaved] = useState(false)
-
-  const [formData, setFormData] = useState({
-    fullName: profile?.full_name || "",
-    username: profile?.username || "",
-    walletAddress: profile?.wallet_address || "",
-  })
 
   // Carregar avatar do localStorage ao iniciar
   useEffect(() => {
@@ -145,57 +132,6 @@ export default function SettingsPage() {
     localStorage.removeItem("userAvatar")
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    })
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!profile) return
-
-    setIsLoading(true)
-
-    try {
-      const supabase = createClientComponentClient()
-
-      const { error } = await supabase
-        .from("profiles")
-        .update({
-          full_name: formData.fullName,
-          username: formData.username,
-          wallet_address: formData.walletAddress,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", profile.id)
-
-      if (error) {
-        throw error
-      }
-
-      // Atualizar o perfil no contexto
-      await refreshProfile()
-
-      toast({
-        title: "Perfil atualizado",
-        description: "Suas informações foram atualizadas com sucesso.",
-      })
-    } catch (error: any) {
-      console.error("Erro ao atualizar perfil:", error)
-
-      toast({
-        title: "Erro ao atualizar perfil",
-        description: error.message || "Ocorreu um erro ao atualizar suas informações.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   return (
     <div className="min-h-screen bg-slate-950 flex">
       <DashboardSidebar />
@@ -262,7 +198,7 @@ export default function SettingsPage() {
                 </Card>
 
                 {/* Card de Informações Pessoais */}
-                {/* <Card className="bg-slate-900 border-slate-800 lg:col-span-2">
+                <Card className="bg-slate-900 border-slate-800 lg:col-span-2">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg font-medium text-white">Informações Pessoais</CardTitle>
                     <CardDescription>Atualize suas informações de contato e perfil.</CardDescription>
@@ -342,77 +278,6 @@ export default function SettingsPage() {
                       </Button>
                     </div>
                   </CardContent>
-                </Card> */}
-                <Card className="bg-slate-900 border-slate-800 lg:col-span-2">
-                  <form onSubmit={handleSubmit}>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-lg font-medium text-white">Informações Pessoais</CardTitle>
-                      <CardDescription>Atualize suas informações de contato e perfil.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="fullName" className="text-white">
-                          Nome Completo
-                        </Label>
-                        <Input
-                          id="fullName"
-                          name="fullName"
-                          value={formData.fullName}
-                          onChange={handleChange}
-                          disabled={isLoading}
-                          className="bg-slate-800 border-slate-700 text-white"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="username" className="text-white">
-                          Nome de Usuário
-                        </Label>
-                        <Input
-                          id="username"
-                          name="username"
-                          value={formData.username}
-                          onChange={handleChange}
-                          disabled={isLoading}
-                          className="bg-slate-800 border-slate-700 text-white"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="walletAddress" className="text-white">
-                          Endereço da Carteira
-                        </Label>
-                        <Input
-                          id="walletAddress"
-                          name="walletAddress"
-                          value={formData.walletAddress}
-                          onChange={handleChange}
-                          disabled={isLoading}
-                          placeholder="Endereço para receber pagamentos"
-                          className="bg-slate-800 border-slate-700 text-white"
-                        />
-                      </div>
-                    </CardContent>
-                    <CardFooter>
-                      <Button
-                        type="submit"
-                        disabled={isLoading}
-                        className="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500"
-                      >
-                        {isLoading ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Salvando...
-                          </>
-                        ) : (
-                          <>
-                            <Save className="mr-2 h-4 w-4" />
-                            Salvar Alterações
-                          </>
-                        )}
-                      </Button>
-                    </CardFooter>
-                  </form>
                 </Card>
               </div>
             </TabsContent>

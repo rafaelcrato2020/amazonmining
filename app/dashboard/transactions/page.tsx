@@ -19,7 +19,6 @@ export default function TransactionsPage() {
   const [searchQuery, setSearchQuery] = useState("")
 
   // Dados simulados de transações
-  /*
   const depositTransactions = [
     {
       id: "dep-001",
@@ -173,7 +172,6 @@ export default function TransactionsPage() {
       investment: 1000,
     },
   ]
-  */
 
   // Função para filtrar transações por data
   const filterTransactionsByDate = (transactions: any[]) => {
@@ -216,10 +214,10 @@ export default function TransactionsPage() {
   }
 
   // Aplicar filtros
-  const filteredDeposits = filterTransactionsBySearch(filterTransactionsByDate([]))
-  const filteredWithdraws = filterTransactionsBySearch(filterTransactionsByDate([]))
-  const filteredRewards = filterTransactionsBySearch(filterTransactionsByDate([]))
-  const filteredEarnings = filterTransactionsBySearch(filterTransactionsByDate([]))
+  const filteredDeposits = filterTransactionsBySearch(filterTransactionsByDate(depositTransactions))
+  const filteredWithdraws = filterTransactionsBySearch(filterTransactionsByDate(withdrawTransactions))
+  const filteredRewards = filterTransactionsBySearch(filterTransactionsByDate(rewardsTransactions))
+  const filteredEarnings = filterTransactionsBySearch(filterTransactionsByDate(earningsTransactions))
 
   return (
     <div className="min-h-screen bg-slate-950 flex">
@@ -300,7 +298,7 @@ export default function TransactionsPage() {
                       </div>
                       <div>
                         <p className="text-sm text-slate-400">Total Depositado</p>
-                        <p className="text-xl font-bold text-white">$0.00</p>
+                        <p className="text-xl font-bold text-white">$1,750.00</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -311,7 +309,7 @@ export default function TransactionsPage() {
                       </div>
                       <div>
                         <p className="text-sm text-slate-400">Total Sacado</p>
-                        <p className="text-xl font-bold text-white">$0.00</p>
+                        <p className="text-xl font-bold text-white">$545.00</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -322,7 +320,7 @@ export default function TransactionsPage() {
                       </div>
                       <div>
                         <p className="text-sm text-slate-400">Total Comissões</p>
-                        <p className="text-xl font-bold text-white">$0.00</p>
+                        <p className="text-xl font-bold text-white">$109.88</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -333,7 +331,7 @@ export default function TransactionsPage() {
                       </div>
                       <div>
                         <p className="text-sm text-slate-400">Total Rendimentos</p>
-                        <p className="text-xl font-bold text-white">$0.00</p>
+                        <p className="text-xl font-bold text-white">$225.00</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -360,7 +358,7 @@ export default function TransactionsPage() {
                               </div>
                             </div>
                             <div className="text-right">
-                              <p className="text-emerald-400 font-medium">+$0.00</p>
+                              <p className="text-emerald-400 font-medium">+${transaction.amount.toFixed(2)}</p>
                               <p className="text-xs text-slate-400">{transaction.network}</p>
                             </div>
                           </div>
@@ -386,8 +384,8 @@ export default function TransactionsPage() {
                               </div>
                             </div>
                             <div className="text-right">
-                              <p className="text-red-400 font-medium">-$0.00</p>
-                              <p className="text-xs text-slate-400">Taxa: $0.00</p>
+                              <p className="text-red-400 font-medium">-${transaction.amount.toFixed(2)}</p>
+                              <p className="text-xs text-slate-400">Taxa: ${transaction.fee.toFixed(2)}</p>
                             </div>
                           </div>
                           <div className="text-xs text-slate-500 flex items-center gap-1">
@@ -412,7 +410,7 @@ export default function TransactionsPage() {
                               </div>
                             </div>
                             <div className="text-right">
-                              <p className="text-blue-400 font-medium">+$0.00</p>
+                              <p className="text-blue-400 font-medium">+${transaction.amount.toFixed(2)}</p>
                               <p className="text-xs text-slate-400">
                                 Plano {transaction.plan} • {transaction.rate}
                               </p>
@@ -438,12 +436,12 @@ export default function TransactionsPage() {
                               </div>
                             </div>
                             <div className="text-right">
-                              <p className="text-amber-400 font-medium">+$0.00</p>
+                              <p className="text-amber-400 font-medium">+${transaction.amount.toFixed(2)}</p>
                               <p className="text-xs text-slate-400">Taxa: {transaction.rate}</p>
                             </div>
                           </div>
                           <div className="text-xs text-slate-500">
-                            <span>Investimento: $0.00</span>
+                            <span>Investimento: ${transaction.investment.toFixed(2)}</span>
                           </div>
                         </div>
                       ))}
@@ -475,7 +473,7 @@ export default function TransactionsPage() {
                               </div>
                             </div>
                             <div className="text-right">
-                              <p className="text-emerald-400 font-medium">+$0.00</p>
+                              <p className="text-emerald-400 font-medium">+${transaction.amount.toFixed(2)}</p>
                               <p className="text-xs text-slate-400">{transaction.network}</p>
                             </div>
                           </div>
@@ -520,8 +518,8 @@ export default function TransactionsPage() {
                               </div>
                             </div>
                             <div className="text-right">
-                              <p className="text-red-400 font-medium">-$0.00</p>
-                              <p className="text-xs text-slate-400">Taxa: $0.00</p>
+                              <p className="text-red-400 font-medium">-${transaction.amount.toFixed(2)}</p>
+                              <p className="text-xs text-slate-400">Taxa: ${transaction.fee.toFixed(2)}</p>
                             </div>
                           </div>
                           <div className="text-xs text-slate-500 flex items-center gap-1">
@@ -565,7 +563,7 @@ export default function TransactionsPage() {
                               </div>
                             </div>
                             <div className="text-right">
-                              <p className="text-blue-400 font-medium">+$0.00</p>
+                              <p className="text-blue-400 font-medium">+${transaction.amount.toFixed(2)}</p>
                               <p className="text-xs text-slate-400">
                                 Plano {transaction.plan} • {transaction.rate}
                               </p>
@@ -610,12 +608,12 @@ export default function TransactionsPage() {
                               </div>
                             </div>
                             <div className="text-right">
-                              <p className="text-amber-400 font-medium">+$0.00</p>
+                              <p className="text-amber-400 font-medium">+${transaction.amount.toFixed(2)}</p>
                               <p className="text-xs text-slate-400">Taxa: {transaction.rate}</p>
                             </div>
                           </div>
                           <div className="text-xs text-slate-500">
-                            <span>Investimento: $0.00</span>
+                            <span>Investimento: ${transaction.investment.toFixed(2)}</span>
                           </div>
                         </div>
                       ))

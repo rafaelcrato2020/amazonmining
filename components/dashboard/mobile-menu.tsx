@@ -100,8 +100,8 @@ export function MobileMenu() {
                 <AvatarFallback className="bg-slate-700 text-emerald-400">AM</AvatarFallback>
               </Avatar>
               <div>
-                <p className="text-sm font-medium text-white">Usuário</p>
-                <p className="text-xs text-slate-400">usuario@exemplo.com</p>
+                <p className="text-sm font-medium text-white">João Silva</p>
+                <p className="text-xs text-slate-400">joao@email.com</p>
               </div>
             </div>
           </div>

@@ -15,7 +15,7 @@ export default function CareerPage() {
   const { isOpen } = useSidebar()
 
   // Dados do usuário (simulados)
-  const userEarnings = 0
+  const userEarnings = 1250
 
   const careerRewards = [
     {
@@ -92,7 +92,7 @@ export default function CareerPage() {
                   </span>
                 </div>
                 <Progress
-                  value={0}
+                  value={progress > 100 ? 100 : progress}
                   className="h-2 bg-slate-800"
                   indicatorClassName="bg-gradient-to-r from-emerald-600 to-cyan-600"
                 />

@@ -6,13 +6,13 @@ import { Award, ChevronRight } from "lucide-react"
 
 export function DashboardRewards() {
   const referrals = [
-    { name: "Usuário 1", level: 1, earnings: 0 },
-    { name: "Usuário 2", level: 1, earnings: 0 },
-    { name: "Usuário 3", level: 2, earnings: 0 },
-    { name: "Usuário 4", level: 3, earnings: 0 },
+    { name: "Carlos Oliveira", level: 1, earnings: 120.5 },
+    { name: "Ana Silva", level: 1, earnings: 85.75 },
+    { name: "Pedro Santos", level: 2, earnings: 42.3 },
+    { name: "Mariana Costa", level: 3, earnings: 21.15 },
   ]
 
-  const totalEarnings = 0
+  const totalEarnings = referrals.reduce((sum, ref) => sum + ref.earnings, 0)
   const nextReward = 500 // Próxima recompensa em $500
   const progress = (totalEarnings / nextReward) * 100
 
@@ -58,7 +58,7 @@ export function DashboardRewards() {
                   <p className="text-xs text-slate-400">Nível {referral.level}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-medium text-emerald-400">+$0.00</p>
+                  <p className="text-sm font-medium text-emerald-400">+${referral.earnings.toFixed(2)}</p>
                 </div>
               </div>
             ))}

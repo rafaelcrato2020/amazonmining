@@ -54,9 +54,8 @@ export default function DepositPage() {
   const [calcRate] = useState(4.5) // Taxa fixa de 4.5%
 
   // Reinvestimento
-  const availableBalance = 0
-  const [reinvestAmount, setReinvestAmount] = useState("0")
-
+  const availableBalance = 1234.56
+  const [reinvestAmount, setReinvestAmount] = useState(availableBalance.toString())
   const [reinvestPercentage, setReinvestPercentage] = useState(100)
 
   const walletAddress = "0xcf8b1e6A65d0B9C232BFd35226645cCd6C744F11"
@@ -419,7 +418,7 @@ export default function DepositPage() {
                         <div className="bg-slate-800/50 rounded-lg p-3">
                           <div className="flex items-center justify-between mb-1">
                             <div>
-                              <p className="text-white font-medium">$0.00</p>
+                              <p className="text-white font-medium">$500.00</p>
                               <p className="text-xs text-slate-400">12 Mai 2025, 10:25</p>
                             </div>
                             <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
@@ -431,7 +430,7 @@ export default function DepositPage() {
                         <div className="bg-slate-800/50 rounded-lg p-3">
                           <div className="flex items-center justify-between mb-1">
                             <div>
-                              <p className="text-white font-medium">$0.00</p>
+                              <p className="text-white font-medium">$1,000.00</p>
                               <p className="text-xs text-slate-400">5 Mai 2025, 14:30</p>
                             </div>
                             <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
@@ -622,7 +621,7 @@ export default function DepositPage() {
                         <div className="bg-slate-800/50 rounded-lg p-3">
                           <div className="flex items-center justify-between mb-1">
                             <div>
-                              <p className="text-white font-medium">$0.00</p>
+                              <p className="text-white font-medium">$250.00</p>
                               <p className="text-xs text-slate-400">14 Mai 2025, 09:15</p>
                             </div>
                             <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">Ativo</Badge>
@@ -632,7 +631,7 @@ export default function DepositPage() {
                         <div className="bg-slate-800/50 rounded-lg p-3">
                           <div className="flex items-center justify-between mb-1">
                             <div>
-                              <p className="text-white font-medium">$0.00</p>
+                              <p className="text-white font-medium">$500.00</p>
                               <p className="text-xs text-slate-400">1 Mai 2025, 11:30</p>
                             </div>
                             <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">Ativo</Badge>

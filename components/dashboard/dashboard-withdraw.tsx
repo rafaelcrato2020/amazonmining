@@ -12,7 +12,7 @@ export function DashboardWithdraw() {
   const [amount, setAmount] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
-  const availableBalance = 0
+  const availableBalance = 1234.56
   const fee = amount ? Number.parseFloat(amount) * 0.06 : 0
   const finalAmount = amount ? Number.parseFloat(amount) - fee : 0
 
