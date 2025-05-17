@@ -3,17 +3,18 @@
 import type React from "react"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { createClientComponentClient } from "@/lib/supabase"
 
-export function LoginForm() {
+export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState(false)
+  const router = useRouter()
 
   const [formData, setFormData] = useState({
     email: "",
@@ -51,18 +52,16 @@ export function LoginForm() {
         throw error
       }
 
-      console.log("Login bem-sucedido:", data)
-
-      // Mostrar mensagem de sucesso
-      setSuccess(true)
-
-      // Redirecionar para o dashboard após um breve delay
-      setTimeout(() => {
-        window.location.href = "/dashboard"
-      }, 1000)
+      // Login bem-sucedido
+      if (onSuccess) {
+        onSuccess()
+      } else {
+        router.push("/dashboard")
+        router.refresh()
+      }
     } catch (err: any) {
       console.error("Erro no login:", err)
-      setError(err.message || "Credenciais inválidas. Tente novamente.")
+      setError("Email ou senha incorretos. Tente novamente.")
     } finally {
       setIsLoading(false)
     }
@@ -70,13 +69,12 @@ export function LoginForm() {
 
   return (
     <div className="space-y-6 py-4">
-      {success ? (
-        <div className="bg-emerald-500/10 text-emerald-500 text-sm p-3 rounded-md text-center">
-          Login bem-sucedido! Redirecionando para o dashboard...
-        </div>
-      ) : error ? (
-        <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">{error}</div>
-      ) : null}
+      <div className="space-y-2 text-center">
+        <h1 className="text-3xl font-bold">Login</h1>
+        <p className="text-muted-foreground">Entre com suas credenciais abaixo</p>
+      </div>
+
+      {error && <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">{error}</div>}
 
       <form onSubmit={handleSubmit}>
         <div className="space-y-4">
@@ -89,7 +87,7 @@ export function LoginForm() {
               placeholder="Digite seu email"
               value={formData.email}
               onChange={handleChange}
-              disabled={isLoading || success}
+              disabled={isLoading}
               required
             />
           </div>
@@ -104,7 +102,7 @@ export function LoginForm() {
                 placeholder="Digite sua senha"
                 value={formData.password}
                 onChange={handleChange}
-                disabled={isLoading || success}
+                disabled={isLoading}
                 required
               />
               <Button
@@ -113,7 +111,7 @@ export function LoginForm() {
                 size="icon"
                 className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                 onClick={() => setShowPassword(!showPassword)}
-                disabled={isLoading || success}
+                disabled={isLoading}
               >
                 {showPassword ? (
                   <EyeOff className="h-4 w-4 text-muted-foreground" />
@@ -125,14 +123,12 @@ export function LoginForm() {
             </div>
           </div>
 
-          <Button className="w-full" type="submit" disabled={isLoading || success}>
+          <Button className="w-full" type="submit" disabled={isLoading}>
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Entrando...
               </>
-            ) : success ? (
-              "Login bem-sucedido!"
             ) : (
               "Entrar"
             )}
