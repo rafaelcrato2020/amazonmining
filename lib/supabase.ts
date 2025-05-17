@@ -1,31 +1,27 @@
 import { createClient } from "@supabase/supabase-js"
 
-// Verificar se as variáveis de ambiente estão definidas
-if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-  console.error("Missing environment variable: NEXT_PUBLIC_SUPABASE_URL")
-}
+// Criando cliente para o navegador (client-side)
+export const createClientComponentClient = () => {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
 
-if (!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-  console.error("Missing environment variable: NEXT_PUBLIC_SUPABASE_ANON_KEY")
-}
-
-// Criar cliente para componentes do servidor
-export function createServerComponentClient() {
-  return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+  return createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
-      persistSession: false,
+      persistSession: true,
+      autoRefreshToken: true,
     },
   })
 }
 
-// Criar cliente para componentes do cliente
-export function createClientComponentClient() {
-  return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+// Criando cliente para o servidor (server-side)
+export const createServerComponentClient = () => {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
+
+  return createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
       persistSession: true,
       autoRefreshToken: true,
-      detectSessionInUrl: true,
-      storageKey: "amazon-mining-auth-token",
     },
   })
 }

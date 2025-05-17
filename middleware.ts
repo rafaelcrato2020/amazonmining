@@ -17,7 +17,7 @@ export async function middleware(req: NextRequest) {
   // Se o usuário não estiver autenticado e tentar acessar a dashboard
   if (!session && req.nextUrl.pathname.startsWith("/dashboard")) {
     // Redirecionar para a página inicial
-    return NextResponse.redirect(new URL("/", req.url))
+    return NextResponse.redirect(new URL("/login", req.url))
   }
 
   // Permitir o acesso

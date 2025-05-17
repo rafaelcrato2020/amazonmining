@@ -1,10 +1,10 @@
-import { LoginForm } from "@/components/login-form"
+import { RegisterForm } from "@/components/register-form"
 import { FloatingLogo } from "@/components/floating-logo"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 
-export default function LoginPage() {
+export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-slate-950 to-emerald-950 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md bg-slate-900 rounded-lg shadow-xl border border-slate-800 p-6">
@@ -16,12 +16,12 @@ export default function LoginPage() {
           Amazon Mining
         </h1>
 
-        <LoginForm />
+        <RegisterForm />
 
         <div className="mt-6 text-center text-sm text-slate-400">
-          Não tem uma conta?{" "}
-          <Link href="/register" className="text-emerald-400 hover:text-emerald-300">
-            Cadastre-se
+          Já tem uma conta?{" "}
+          <Link href="/login" className="text-emerald-400 hover:text-emerald-300">
+            Faça login
           </Link>
         </div>
 

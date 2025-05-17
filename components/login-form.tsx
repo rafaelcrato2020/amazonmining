@@ -9,10 +9,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { createClientComponentClient } from "@/lib/supabase"
 
-export function LoginForm({ setOpen }: { setOpen?: (open: boolean) => void }) {
+export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
 
   const [formData, setFormData] = useState({
     email: "",
@@ -52,13 +53,13 @@ export function LoginForm({ setOpen }: { setOpen?: (open: boolean) => void }) {
 
       console.log("Login bem-sucedido:", data)
 
-      // Fechar o modal se existir
-      if (setOpen) {
-        setOpen(false)
-      }
+      // Mostrar mensagem de sucesso
+      setSuccess(true)
 
-      // Usar redirecionamento direto do navegador em vez do router do Next.js
-      window.location.href = "/dashboard"
+      // Redirecionar para o dashboard após um breve delay
+      setTimeout(() => {
+        window.location.href = "/dashboard"
+      }, 1000)
     } catch (err: any) {
       console.error("Erro no login:", err)
       setError(err.message || "Credenciais inválidas. Tente novamente.")
@@ -69,12 +70,13 @@ export function LoginForm({ setOpen }: { setOpen?: (open: boolean) => void }) {
 
   return (
     <div className="space-y-6 py-4">
-      <div className="space-y-2 text-center">
-        <h1 className="text-3xl font-bold">Entrar</h1>
-        <p className="text-muted-foreground">Entre com sua conta para acessar o dashboard</p>
-      </div>
-
-      {error && <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">{error}</div>}
+      {success ? (
+        <div className="bg-emerald-500/10 text-emerald-500 text-sm p-3 rounded-md text-center">
+          Login bem-sucedido! Redirecionando para o dashboard...
+        </div>
+      ) : error ? (
+        <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">{error}</div>
+      ) : null}
 
       <form onSubmit={handleSubmit}>
         <div className="space-y-4">
@@ -87,7 +89,7 @@ export function LoginForm({ setOpen }: { setOpen?: (open: boolean) => void }) {
               placeholder="Digite seu email"
               value={formData.email}
               onChange={handleChange}
-              disabled={isLoading}
+              disabled={isLoading || success}
               required
             />
           </div>
@@ -102,7 +104,7 @@ export function LoginForm({ setOpen }: { setOpen?: (open: boolean) => void }) {
                 placeholder="Digite sua senha"
                 value={formData.password}
                 onChange={handleChange}
-                disabled={isLoading}
+                disabled={isLoading || success}
                 required
               />
               <Button
@@ -111,7 +113,7 @@ export function LoginForm({ setOpen }: { setOpen?: (open: boolean) => void }) {
                 size="icon"
                 className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                 onClick={() => setShowPassword(!showPassword)}
-                disabled={isLoading}
+                disabled={isLoading || success}
               >
                 {showPassword ? (
                   <EyeOff className="h-4 w-4 text-muted-foreground" />
@@ -123,12 +125,14 @@ export function LoginForm({ setOpen }: { setOpen?: (open: boolean) => void }) {
             </div>
           </div>
 
-          <Button className="w-full" type="submit" disabled={isLoading}>
+          <Button className="w-full" type="submit" disabled={isLoading || success}>
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Entrando...
               </>
+            ) : success ? (
+              "Login bem-sucedido!"
             ) : (
               "Entrar"
             )}

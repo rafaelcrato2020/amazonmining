@@ -8,10 +8,10 @@ export async function GET(request: Request) {
   if (code) {
     const supabase = createServerComponentClient()
 
-    // Trocar o código por uma sessão
+    // Troca o código de autenticação por uma sessão
     await supabase.auth.exchangeCodeForSession(code)
   }
 
-  // Redirecionar para o dashboard após autenticação
-  return NextResponse.redirect(new URL("/dashboard", requestUrl.origin))
+  // Redireciona para o dashboard após autenticação
+  return NextResponse.redirect(new URL("/dashboard", request.url))
 }
