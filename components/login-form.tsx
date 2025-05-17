@@ -3,18 +3,16 @@
 import type React from "react"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { createClientComponentClient } from "@/lib/supabase"
 
-export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
+export function LoginForm({ setOpen }: { setOpen?: (open: boolean) => void }) {
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const router = useRouter()
 
   const [formData, setFormData] = useState({
     email: "",
@@ -52,16 +50,18 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
         throw error
       }
 
-      // Login bem-sucedido
-      if (onSuccess) {
-        onSuccess()
-      } else {
-        router.push("/dashboard")
-        router.refresh()
+      console.log("Login bem-sucedido:", data)
+
+      // Fechar o modal se existir
+      if (setOpen) {
+        setOpen(false)
       }
+
+      // Usar redirecionamento direto do navegador em vez do router do Next.js
+      window.location.href = "/dashboard"
     } catch (err: any) {
       console.error("Erro no login:", err)
-      setError("Email ou senha incorretos. Tente novamente.")
+      setError(err.message || "Credenciais inválidas. Tente novamente.")
     } finally {
       setIsLoading(false)
     }
@@ -70,8 +70,8 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
   return (
     <div className="space-y-6 py-4">
       <div className="space-y-2 text-center">
-        <h1 className="text-3xl font-bold">Login</h1>
-        <p className="text-muted-foreground">Entre com suas credenciais abaixo</p>
+        <h1 className="text-3xl font-bold">Entrar</h1>
+        <p className="text-muted-foreground">Entre com sua conta para acessar o dashboard</p>
       </div>
 
       {error && <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">{error}</div>}
