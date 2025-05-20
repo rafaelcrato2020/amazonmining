@@ -1,48 +1,25 @@
 "use client"
 
-import type React from "react"
-
-import { useState, useEffect } from "react"
-import { DashboardSidebar } from "./dashboard-sidebar"
-import { DashboardHeader } from "./dashboard-header"
-import { useRouter } from "next/router"
+import type { ReactNode } from "react"
+import { DashboardHeader } from "@/components/dashboard/dashboard-header"
+import { MobileMenu } from "@/components/dashboard/mobile-menu"
 
 interface DashboardLayoutProps {
-  children: React.ReactNode
+  children: ReactNode
 }
 
+// Este componente não é mais usado diretamente, mas mantemos para compatibilidade
 export function DashboardLayout({ children }: DashboardLayoutProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [mounted, setMounted] = useState(false)
-  const router = useRouter()
-
-  useEffect(() => {
-    setMounted(true)
-
-    // Verificar se o usuário está "logado" (usando localStorage para mock)
-    const checkAuth = () => {
-      try {
-        const mockUser = localStorage.getItem("mockUser")
-        if (!mockUser || !JSON.parse(mockUser).isLoggedIn) {
-          router.push("/login")
-        }
-      } catch (error) {
-        console.error("Erro ao verificar autenticação:", error)
-        router.push("/login")
-      }
-    }
-
-    checkAuth()
-  }, [router])
-
-  if (!mounted) return null
-
   return (
-    <div className="flex h-screen bg-slate-900 text-white">
-      <DashboardSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <DashboardHeader onMenuClick={() => setSidebarOpen(true)} />
-        <main className="flex-1 overflow-y-auto bg-slate-900">{children}</main>
+    <div className="min-h-screen bg-slate-950 text-white">
+      <div>
+        <div className="md:hidden">
+          <MobileMenu />
+        </div>
+        <div className="hidden md:block">
+          <DashboardHeader />
+        </div>
+        <main className="container mx-auto px-4 py-8">{children}</main>
       </div>
     </div>
   )

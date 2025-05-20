@@ -1,72 +1,132 @@
 "use client"
 
+import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { useRouter } from "next/router"
-import { Home, BarChart3, Wallet, Users, Gift, Settings, HelpCircle, X, Award, Percent } from "lucide-react"
+import Image from "next/image"
+import {
+  LayoutDashboard,
+  Award,
+  Settings,
+  HelpCircle,
+  Gift,
+  DollarSign,
+  PlusCircle,
+  FileText,
+  RefreshCw,
+  Percent,
+  ChevronLeft,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+import { useSidebar } from "@/contexts/sidebar-context"
 
-interface DashboardSidebarProps {
-  open: boolean
-  onClose: () => void
-}
+export function DashboardSidebar() {
+  const pathname = usePathname()
+  const { isVisible, toggleSidebar } = useSidebar()
 
-export function DashboardSidebar({ open, onClose }: DashboardSidebarProps) {
-  const router = useRouter()
-
-  const isActive = (path: string) => {
-    return router.pathname === path || router.pathname.startsWith(`${path}/`)
-  }
-
-  const navItems = [
-    { name: "Dashboard", href: "/dashboard", icon: Home },
-    { name: "Estatísticas", href: "/dashboard/stats", icon: BarChart3 },
-    { name: "Carteira", href: "/dashboard/wallet", icon: Wallet },
-    { name: "Indicações", href: "/dashboard/referrals", icon: Users },
-    { name: "Recompensas", href: "/dashboard/rewards", icon: Gift },
-    { name: "Bônus Residual", href: "/dashboard/residual-bonus", icon: Percent }, // Novo item
-    { name: "Planos de Recompensa", href: "/dashboard/rewards", icon: Award },
-    { name: "Configurações", href: "/dashboard/settings", icon: Settings },
-    { name: "Ajuda", href: "/dashboard/help", icon: HelpCircle },
+  const menuItems = [
+    {
+      title: "Dashboard",
+      icon: LayoutDashboard,
+      href: "/dashboard",
+    },
+    {
+      title: "Depósito",
+      icon: PlusCircle,
+      href: "/dashboard/deposit",
+    },
+    {
+      title: "Reinvestir",
+      icon: RefreshCw,
+      href: "/dashboard/deposit?tab=reinvest",
+    },
+    {
+      title: "Saque",
+      icon: DollarSign,
+      href: "/dashboard/withdraw",
+    },
+    {
+      title: "Planos de Recompensa",
+      icon: Award,
+      href: "/dashboard/rewards",
+    },
+    {
+      title: "Plano de Carreira",
+      icon: Gift,
+      href: "/dashboard/career",
+    },
+    {
+      title: "Bônus Residual",
+      icon: Percent,
+      href: "/dashboard/residual-bonus",
+    },
+    {
+      title: "Extrato",
+      icon: FileText,
+      href: "/dashboard/transactions",
+    },
+    {
+      title: "Configurações",
+      icon: Settings,
+      href: "/dashboard/settings",
+    },
+    {
+      title: "Suporte",
+      icon: HelpCircle,
+      href: "/dashboard/support",
+    },
   ]
 
   return (
-    <>
-      {/* Overlay para dispositivos móveis */}
-      {open && <div className="fixed inset-0 z-40 bg-black/50 md:hidden" onClick={onClose} />}
-
-      {/* Barra lateral */}
-      <div
-        className={`fixed top-0 bottom-0 left-0 z-50 w-64 bg-slate-800 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${
-          open ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <div className="flex h-16 items-center justify-between px-4 border-b border-slate-700">
-          <Link href="/dashboard" className="flex items-center">
-            <span className="text-xl font-bold text-white">Amazon Mining</span>
-          </Link>
-          <Button variant="ghost" size="icon" className="md:hidden" onClick={onClose}>
-            <X className="h-5 w-5 text-slate-400" />
-          </Button>
+    <aside
+      className={`fixed left-0 top-0 h-screen bg-slate-900 border-r border-slate-800 flex flex-col z-50 transition-all duration-300 ${
+        isVisible ? "w-64" : "w-0 -translate-x-full"
+      }`}
+    >
+      <div className="p-4 border-b border-slate-800 flex items-center justify-between">
+        <div className="flex justify-center">
+          <Image
+            src="/images/amazon-mining-logo.png"
+            alt="Amazon Mining Logo"
+            width={40}
+            height={40}
+            className="rounded-full border-2 border-emerald-500"
+          />
         </div>
 
-        <nav className="p-4 space-y-1">
-          {navItems.map((item) => {
-            const Icon = item.icon
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center px-3 py-2 rounded-md transition-colors ${
-                  isActive(item.href) ? "bg-slate-700 text-white" : "text-slate-400 hover:bg-slate-700 hover:text-white"
-                }`}
-              >
-                <Icon className="h-5 w-5 mr-3" />
-                <span>{item.name}</span>
-              </Link>
-            )
-          })}
+        <Button variant="ghost" size="icon" onClick={toggleSidebar} className="text-slate-400 hover:text-white">
+          <ChevronLeft className="h-5 w-5" />
+          <span className="sr-only">Fechar menu</span>
+        </Button>
+      </div>
+
+      <div className="flex-1 overflow-y-auto py-4">
+        <nav className="px-4">
+          <ul className="space-y-1">
+            {menuItems.map((item) => {
+              const Icon = item.icon
+              const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname?.startsWith(item.href))
+
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      "flex items-center px-3 py-2 rounded-md transition-colors",
+                      isActive
+                        ? "bg-emerald-500/10 text-emerald-400"
+                        : "text-slate-400 hover:text-white hover:bg-slate-800",
+                    )}
+                  >
+                    <Icon className="h-5 w-5 mr-3" />
+                    <span>{item.title}</span>
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
         </nav>
       </div>
-    </>
+    </aside>
   )
 }
