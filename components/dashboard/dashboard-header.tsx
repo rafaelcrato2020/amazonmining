@@ -1,58 +1,62 @@
 "use client"
 
-import { useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
+import { Bell, Menu, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { Bell, Menu } from "lucide-react"
-import { createClientComponentClient } from "@/lib/supabase"
-import { useRouter } from "next/navigation"
-import { MobileMenu } from "./mobile-menu"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { useRouter } from "next/router"
 
-export function DashboardHeader() {
-  const [showMobileMenu, setShowMobileMenu] = useState(false)
-  const [unreadNotifications, setUnreadNotifications] = useState(3)
+interface DashboardHeaderProps {
+  onMenuClick: () => void
+}
+
+export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
   const router = useRouter()
-  const supabase = createClientComponentClient()
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    router.push("/login")
+  const handleLogout = () => {
+    // Remover o usuário mockado do localStorage
+    localStorage.removeItem("mockUser")
+
+    // Redirecionar para a página inicial
+    router.push("/")
   }
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-slate-800 bg-slate-900 px-4 md:px-6">
-      <div className="flex items-center gap-2 md:gap-4">
-        <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setShowMobileMenu(true)}>
-          <Menu className="h-6 w-6 text-white" />
-          <span className="sr-only">Toggle Menu</span>
+    <header className="h-16 border-b border-slate-700 flex items-center justify-between px-4">
+      <div className="flex items-center">
+        <Button variant="ghost" size="icon" className="md:hidden mr-2" onClick={onMenuClick}>
+          <Menu className="h-5 w-5 text-slate-400" />
         </Button>
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="relative h-8 w-8 overflow-hidden rounded-full">
-            <Image src="/images/amazon-mining-logo.png" alt="Amazon Mining" fill className="object-cover" />
-          </div>
-          <span className="hidden font-bold text-white md:inline-block">Amazon Mining</span>
-        </Link>
+        <h1 className="text-xl font-bold text-white">Dashboard</h1>
       </div>
-      <div className="flex items-center gap-4">
-        <ThemeToggle />
-        <Link href="/dashboard/notifications">
-          <Button variant="ghost" size="icon" className="relative">
-            <Bell className="h-5 w-5 text-white" />
-            {unreadNotifications > 0 && (
-              <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-medium text-white">
-                {unreadNotifications}
-              </span>
-            )}
-            <span className="sr-only">Notificações</span>
-          </Button>
-        </Link>
-        <Button variant="ghost" size="sm" className="hidden text-white md:inline-flex" onClick={handleSignOut}>
-          Sair
+      <div className="flex items-center space-x-2">
+        <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white">
+          <Bell className="h-5 w-5" />
         </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <User className="h-5 w-5 text-slate-400" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56 bg-slate-800 border-slate-700 text-white">
+            <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
+            <DropdownMenuSeparator className="bg-slate-700" />
+            <DropdownMenuItem className="hover:bg-slate-700" onClick={() => router.push("/dashboard/settings")}>
+              Configurações
+            </DropdownMenuItem>
+            <DropdownMenuItem className="hover:bg-slate-700" onClick={handleLogout}>
+              Sair
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
-      <MobileMenu open={showMobileMenu} onClose={() => setShowMobileMenu(false)} />
     </header>
   )
 }

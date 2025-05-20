@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["placeholder.svg", "images.unsplash.com", "blob.v0.dev"],
+    domains: ["blob.v0.dev"],
     unoptimized: true,
   },
   eslint: {

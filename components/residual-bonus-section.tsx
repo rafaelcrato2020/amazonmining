@@ -1,6 +1,5 @@
 "use client"
 
-import Image from "next/image"
 import Link from "next/link"
 
 export function ResidualBonusSection() {
@@ -193,14 +192,14 @@ export function ResidualBonusSection() {
           <div className="flex flex-col md:flex-row items-center p-8">
             <div className="md:w-1/3 flex justify-center mb-6 md:mb-0">
               <div className="relative">
-                <Image
+                <img
                   src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/download.jpg-i5cETwhZLv9mH52dzKGStlpYQ0t7tN.jpeg"
                   alt="Telegram"
                   width={150}
                   height={150}
                   className="telegram-icon"
                 />
-                <style jsx global>{`
+                <style jsx>{`
                   @keyframes float {
                     0% {
                       transform: translateY(0px);

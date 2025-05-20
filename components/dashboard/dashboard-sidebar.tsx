@@ -23,7 +23,7 @@ export function DashboardSidebar({ open, onClose }: DashboardSidebarProps) {
     { name: "Carteira", href: "/dashboard/wallet", icon: Wallet },
     { name: "Indicações", href: "/dashboard/referrals", icon: Users },
     { name: "Recompensas", href: "/dashboard/rewards", icon: Gift },
-    { name: "Bônus Residual", href: "/dashboard/residual-bonus", icon: Percent },
+    { name: "Bônus Residual", href: "/dashboard/residual-bonus", icon: Percent }, // Novo item
     { name: "Planos de Recompensa", href: "/dashboard/rewards", icon: Award },
     { name: "Configurações", href: "/dashboard/settings", icon: Settings },
     { name: "Ajuda", href: "/dashboard/help", icon: HelpCircle },

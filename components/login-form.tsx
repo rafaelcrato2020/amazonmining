@@ -90,7 +90,7 @@ export function LoginForm() {
   }
 
   return (
-    <div className="space-y-6 py-4">
+    <div className="space-y-6 py-4 px-6">
       <div className="space-y-2 text-center">
         <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-400">
           Bem-vindo de volta
