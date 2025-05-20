@@ -3,80 +3,69 @@
 import { useEffect, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
-export function TelegramBanner({ telegramLink = "https://t.me/amazonmining" }) {
+interface TelegramBannerProps {
+  className?: string
+  telegramLink?: string
+}
+
+export function TelegramBanner({ className = "", telegramLink = "https://t.me/amazonmining" }: TelegramBannerProps) {
   const iconRef = useRef<HTMLDivElement>(null)
 
+  // Efeito de flutuação
   useEffect(() => {
     if (!iconRef.current) return
 
-    const icon = iconRef.current
+    let animationFrameId: number
+    const startTime = Date.now()
 
-    // Configuração da animação flutuante
-    let floatInterval: NodeJS.Timeout
-    let floatPosition = 0
-    let floatUp = true
-    const floatSpeed = 0.15
-    const maxFloat = 10
+    const animate = () => {
+      const currentTime = Date.now()
+      const elapsed = (currentTime - startTime) / 1000
 
-    const floatAnimation = () => {
-      if (floatUp) {
-        floatPosition += floatSpeed
-        if (floatPosition >= maxFloat) floatUp = false
-      } else {
-        floatPosition -= floatSpeed
-        if (floatPosition <= -maxFloat) floatUp = true
+      // Movimento suave de flutuação
+      const translateY = Math.sin(elapsed) * 10
+      const rotate = Math.sin(elapsed / 2) * 5
+
+      if (iconRef.current) {
+        iconRef.current.style.transform = `translateY(${translateY}px) rotate(${rotate}deg)`
       }
 
-      icon.style.transform = `translateY(${floatPosition}px)`
+      animationFrameId = requestAnimationFrame(animate)
     }
 
-    floatInterval = setInterval(floatAnimation, 50)
+    animate()
 
     return () => {
-      clearInterval(floatInterval)
+      cancelAnimationFrame(animationFrameId)
     }
   }, [])
 
   return (
-    <div className="w-full bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 py-4 px-4 md:px-8">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+    <div className={`bg-gradient-to-r from-blue-600 to-blue-400 py-4 px-6 ${className}`}>
+      <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div ref={iconRef} className="relative w-16 h-16 transition-transform duration-300 ease-out">
+          <div ref={iconRef} className="relative w-16 h-16 md:w-20 md:h-20 transition-transform duration-300">
             <Image
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/download.jpg-ywIP30GCApVL5V3f0TDefZz13HGcUL.jpeg"
-              alt="Canal do Telegram"
-              width={64}
-              height={64}
-              className="rounded-xl drop-shadow-[0_5px_15px_rgba(0,136,255,0.6)]"
+              alt="Telegram"
+              width={80}
+              height={80}
+              className="rounded-xl shadow-lg"
             />
           </div>
-          <div className="text-white">
-            <h3 className="text-xl font-bold">Pré-Lançamento</h3>
-            <p className="text-blue-100">A revolução começa ao participar do canal do grande pré-lançamento</p>
+          <div>
+            <h3 className="text-white font-bold text-lg md:text-xl">PRÉ-LANÇAMENTO</h3>
+            <p className="text-white/90 text-sm md:text-base">
+              A revolução começa ao participar do canal do grande pré-lançamento
+            </p>
           </div>
         </div>
-        <Link
-          href={telegramLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-white text-blue-600 hover:bg-blue-50 transition-colors px-6 py-2 rounded-full font-medium flex items-center gap-2"
-        >
-          Participar Agora
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="m5 12 14 0"></path>
-            <path d="m12 5 7 7-7 7"></path>
-          </svg>
+        <Link href={telegramLink} target="_blank" rel="noopener noreferrer">
+          <Button className="bg-white text-blue-600 hover:bg-blue-50 font-bold px-6 py-2 rounded-full shadow-lg">
+            Participar Agora
+          </Button>
         </Link>
       </div>
     </div>
