@@ -5,13 +5,11 @@ import type React from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { DollarSign, TrendingUp, Users, Clock, Wallet } from "lucide-react"
-import { PageHeader } from "./page-header"
+import AmazonMiningBot from "./amazon-mining-bot"
 
 export function DashboardOverview() {
   return (
     <div className="p-4 md:p-6">
-      <PageHeader title="Visão Geral" />
-
       <h2 className="text-2xl font-bold text-white mb-6">Visão Geral</h2>
 
       <Tabs defaultValue="daily" className="mb-6">
@@ -76,6 +74,11 @@ export function DashboardOverview() {
               icon={<Clock className="h-5 w-5 text-emerald-400" />}
             />
           </div>
+
+          {/* Componente de Mineração */}
+          <div className="mt-6">
+            <AmazonMiningBot />
+          </div>
         </TabsContent>
 
         <TabsContent value="weekly" className="mt-4">
@@ -129,6 +132,11 @@ export function DashboardOverview() {
               icon={<Clock className="h-5 w-5 text-emerald-400" />}
             />
           </div>
+
+          {/* Componente de Mineração */}
+          <div className="mt-6">
+            <AmazonMiningBot />
+          </div>
         </TabsContent>
 
         <TabsContent value="monthly" className="mt-4">
@@ -181,6 +189,11 @@ export function DashboardOverview() {
               description="De 100 dias"
               icon={<Clock className="h-5 w-5 text-emerald-400" />}
             />
+          </div>
+
+          {/* Componente de Mineração */}
+          <div className="mt-6">
+            <AmazonMiningBot />
           </div>
         </TabsContent>
       </Tabs>
