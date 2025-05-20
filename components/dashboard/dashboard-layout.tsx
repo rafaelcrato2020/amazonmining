@@ -1,31 +1,26 @@
 "use client"
 
-import type { ReactNode } from "react"
-import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar"
-import { DashboardHeader } from "@/components/dashboard/dashboard-header"
-import { MobileMenu } from "@/components/dashboard/mobile-menu"
-import { useSidebar } from "@/contexts/sidebar-context"
-import { cn } from "@/lib/utils"
+import { type ReactNode, useState } from "react"
+import { DashboardHeader } from "./dashboard-header"
+import { DashboardSidebar } from "./dashboard-sidebar"
 
 interface DashboardLayoutProps {
   children: ReactNode
 }
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
-  const { isVisible, isOpen } = useSidebar()
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen)
+  }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
-      <DashboardSidebar />
-
-      <div className={cn("transition-all duration-300 ease-in-out", isVisible ? (isOpen ? "ml-64" : "ml-20") : "ml-0")}>
-        <div className="md:hidden">
-          <MobileMenu />
-        </div>
-        <div className="hidden md:block">
-          <DashboardHeader />
-        </div>
-        <main className="container mx-auto px-4 py-8">{children}</main>
+    <div className="flex h-screen bg-slate-900 text-white">
+      <DashboardSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <DashboardHeader onMenuClick={toggleSidebar} />
+        <main className="flex-1 overflow-y-auto bg-slate-900 p-4">{children}</main>
       </div>
     </div>
   )
