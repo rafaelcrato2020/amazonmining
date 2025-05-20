@@ -1,7 +1,0 @@
-pages/api/jobs/index.ts
-pages/dashboard/index.tsx
-pages/dashboard/rewards.tsx
-pages/login.tsx
-pages/register.tsx
-# Ignorar diretório app/ para evitar conflitos
-app/
