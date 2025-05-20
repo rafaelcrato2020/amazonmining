@@ -56,11 +56,6 @@ export function DashboardSidebar() {
       href: "/dashboard/career",
     },
     {
-      title: "Bônus Residual",
-      icon: Percent,
-      href: "/dashboard/residual-bonus",
-    },
-    {
       title: "Extrato",
       icon: FileText,
       href: "/dashboard/transactions",
@@ -76,6 +71,13 @@ export function DashboardSidebar() {
       href: "/dashboard/support",
     },
   ]
+
+  // Botão de Bônus Residual separado para aplicar cores especiais
+  const residualBonusItem = {
+    title: "Bônus Residual",
+    icon: Percent,
+    href: "/dashboard/residual-bonus",
+  }
 
   return (
     <aside
@@ -124,6 +126,22 @@ export function DashboardSidebar() {
                 </li>
               )
             })}
+
+            {/* Botão de Bônus Residual com cores especiais */}
+            <li>
+              <Link
+                href={residualBonusItem.href}
+                className={cn(
+                  "flex items-center px-3 py-2 rounded-md transition-colors",
+                  pathname === residualBonusItem.href || pathname?.startsWith(residualBonusItem.href)
+                    ? "bg-gradient-to-r from-cyan-500/20 to-emerald-500/20 text-cyan-300"
+                    : "text-cyan-400 hover:bg-gradient-to-r hover:from-cyan-500/10 hover:to-emerald-500/10 hover:text-cyan-300",
+                )}
+              >
+                <residualBonusItem.icon className="h-5 w-5 mr-3 text-cyan-400" />
+                <span className="font-medium">{residualBonusItem.title}</span>
+              </Link>
+            </li>
           </ul>
         </nav>
       </div>

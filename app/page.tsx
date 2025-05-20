@@ -36,9 +36,9 @@ export default function Home() {
         <HeroSection />
         <FeaturesSection />
         <RewardsSection />
-        <CareerSection />
         <ResidualBonusSection />
         <TelegramPreLaunchBanner />
+        <CareerSection />
       </main>
 
       <Footer />
