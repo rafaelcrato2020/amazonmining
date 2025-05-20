@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import { useSearchParams } from "next/navigation"
+import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -27,14 +27,12 @@ import {
 } from "@/components/ui/dialog"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Slider } from "@/components/ui/slider"
-import { useAuth } from "@/contexts/auth-context"
-import { getSystemSettings, requestDeposit, reinvestBalance } from "@/app/actions/dashboard-actions"
-import { toast } from "@/components/ui/use-toast"
-import { formatCurrency } from "@/lib/utils"
+import { useSearchParams } from "next/navigation"
+
+// Componentes e lógica existentes...
 
 export default function DepositPage() {
   const { isVisible, isOpen } = useSidebar()
-  const { user, profile, refreshProfile } = useAuth()
   const [amount, setAmount] = useState("")
   const [copied, setCopied] = useState(false)
   const [showQRCode, setShowQRCode] = useState(false)
@@ -42,8 +40,13 @@ export default function DepositPage() {
   const [activeTab, setActiveTab] = useState("deposit")
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
-  const [isLoading, setIsLoading] = useState(false)
-  const [systemSettings, setSystemSettings] = useState<Record<string, any>>({})
+
+  useEffect(() => {
+    const tab = searchParams.get("tab")
+    if (tab && ["deposit", "reinvest", "calculator"].includes(tab)) {
+      setActiveTab(tab)
+    }
+  }, [searchParams])
 
   // Calculadora de juros compostos
   const [calcAmount, setCalcAmount] = useState("1000")
@@ -51,38 +54,14 @@ export default function DepositPage() {
   const [calcRate] = useState(4.5) // Taxa fixa de 4.5%
 
   // Reinvestimento
-  const availableBalance = profile?.balance || 0
+  const availableBalance = 0
   const [reinvestAmount, setReinvestAmount] = useState("0")
+
   const [reinvestPercentage, setReinvestPercentage] = useState(100)
 
   const walletAddress = "0xcf8b1e6A65d0B9C232BFd35226645cCd6C744F11"
-  const minDeposit = systemSettings.min_deposit || 10
-  const maxDeposit = systemSettings.max_deposit || 500000
-
-  useEffect(() => {
-    const tab = searchParams.get("tab")
-    if (tab && ["deposit", "reinvest", "calculator"].includes(tab)) {
-      setActiveTab(tab)
-    }
-
-    // Carregar configurações do sistema
-    async function loadSettings() {
-      try {
-        const settings = await getSystemSettings()
-        setSystemSettings(settings)
-      } catch (error) {
-        console.error("Erro ao carregar configurações:", error)
-      }
-    }
-
-    loadSettings()
-  }, [searchParams])
-
-  useEffect(() => {
-    if (profile) {
-      setReinvestAmount(profile.balance.toString())
-    }
-  }, [profile])
+  const minDeposit = 10
+  const maxDeposit = 500000
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
@@ -90,27 +69,9 @@ export default function DepositPage() {
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const handleConfirmDeposit = async () => {
+  const handleConfirmDeposit = () => {
     if (!amount || Number.parseFloat(amount) < minDeposit || Number.parseFloat(amount) > maxDeposit) return
-
-    try {
-      setIsLoading(true)
-
-      if (!user) {
-        throw new Error("Usuário não autenticado")
-      }
-
-      await requestDeposit(user.id, Number.parseFloat(amount))
-      setShowQRCode(true)
-    } catch (error: any) {
-      toast({
-        title: "Erro ao solicitar depósito",
-        description: error.message || "Ocorreu um erro ao processar sua solicitação",
-        variant: "destructive",
-      })
-    } finally {
-      setIsLoading(false)
-    }
+    setShowQRCode(true)
   }
 
   const handleReinvestPercentageChange = (value: number[]) => {
@@ -125,46 +86,6 @@ export default function DepositPage() {
     const amount = Number.parseFloat(value)
     if (!isNaN(amount) && amount >= 0 && amount <= availableBalance) {
       setReinvestPercentage(Math.round((amount / availableBalance) * 100))
-    }
-  }
-
-  const handleReinvest = async () => {
-    if (
-      !reinvestAmount ||
-      Number.parseFloat(reinvestAmount) <= 0 ||
-      Number.parseFloat(reinvestAmount) > availableBalance
-    )
-      return
-
-    try {
-      setIsLoading(true)
-
-      if (!user) {
-        throw new Error("Usuário não autenticado")
-      }
-
-      await reinvestBalance(user.id, Number.parseFloat(reinvestAmount))
-
-      toast({
-        title: "Reinvestimento realizado",
-        description: `Você reinvestiu ${formatCurrency(Number.parseFloat(reinvestAmount))} com sucesso!`,
-        variant: "default",
-      })
-
-      // Atualizar perfil para refletir o novo saldo
-      await refreshProfile()
-
-      // Resetar formulário
-      setReinvestAmount("0")
-      setReinvestPercentage(0)
-    } catch (error: any) {
-      toast({
-        title: "Erro ao reinvestir",
-        description: error.message || "Ocorreu um erro ao processar seu reinvestimento",
-        variant: "destructive",
-      })
-    } finally {
-      setIsLoading(false)
     }
   }
 
@@ -235,6 +156,18 @@ export default function DepositPage() {
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
+  }
+
+  // Função para formatar valores monetários
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })
+      .format(value)
+      .replace("US$", "$")
   }
 
   return (
@@ -317,11 +250,11 @@ export default function DepositPage() {
                       <div className="bg-slate-800 rounded-md p-4 space-y-2">
                         <div className="flex items-center justify-between text-sm">
                           <span className="text-slate-400">Rentabilidade diária</span>
-                          <span className="text-white">{systemSettings.daily_rate || 4.5}%</span>
+                          <span className="text-white">4.5%</span>
                         </div>
                         <div className="flex items-center justify-between text-sm">
                           <span className="text-slate-400">Duração do contrato</span>
-                          <span className="text-white">{systemSettings.contract_days || 100} dias</span>
+                          <span className="text-white">100 dias</span>
                         </div>
                         <div className="flex items-center justify-between text-sm">
                           <span className="text-slate-400">Pagamentos</span>
@@ -333,23 +266,13 @@ export default function DepositPage() {
                         <Button
                           onClick={handleConfirmDeposit}
                           disabled={
-                            isLoading ||
-                            !amount ||
-                            Number.parseFloat(amount) < minDeposit ||
-                            Number.parseFloat(amount) > maxDeposit
+                            !amount || Number.parseFloat(amount) < minDeposit || Number.parseFloat(amount) > maxDeposit
                           }
                           className="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500"
                         >
-                          {isLoading ? (
-                            <>
-                              <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                              Processando...
-                            </>
-                          ) : (
-                            <span className="flex items-center gap-2">
-                              Confirmar Depósito <ArrowRight className="h-4 w-4" />
-                            </span>
-                          )}
+                          <span className="flex items-center gap-2">
+                            Confirmar Depósito <ArrowRight className="h-4 w-4" />
+                          </span>
                         </Button>
 
                         <DialogContent className="bg-slate-900 border-slate-800 w-[95vw] max-w-md mx-auto">
@@ -363,10 +286,13 @@ export default function DepositPage() {
                           <div className="flex flex-col items-center justify-center py-4">
                             <div className="bg-white p-4 rounded-lg mb-4 w-full max-w-[250px] mx-auto">
                               <div className="relative aspect-square w-full">
-                                <img
+                                <Image
                                   src="/images/wallet-qrcode.jpeg"
                                   alt="QR Code da carteira"
-                                  className="w-full h-auto object-contain"
+                                  fill
+                                  className="object-contain"
+                                  sizes="(max-width: 768px) 100vw, 250px"
+                                  priority
                                 />
                               </div>
                             </div>
@@ -410,10 +336,7 @@ export default function DepositPage() {
                               onClick={() => {
                                 setShowQRCode(false)
                                 setAmount("")
-                                toast({
-                                  title: "Depósito solicitado",
-                                  description: "Seu depósito será processado assim que confirmado na blockchain.",
-                                })
+                                // Aqui você adicionaria a lógica para confirmar o pagamento
                               }}
                             >
                               Já realizei o pagamento
@@ -438,7 +361,7 @@ export default function DepositPage() {
                           </AccordionTrigger>
                           <AccordionContent className="text-slate-400">
                             <ol className="list-decimal pl-5 space-y-2">
-                              <li>Insira o valor que deseja depositar (mínimo ${minDeposit}).</li>
+                              <li>Insira o valor que deseja depositar (mínimo $10).</li>
                               <li>Clique em "Confirmar Depósito".</li>
                               <li>Escaneie o QR code ou copie o endereço da carteira.</li>
                               <li>Envie o valor exato em USDT na rede BEP20 (BSC).</li>
@@ -493,47 +416,33 @@ export default function DepositPage() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-3">
-                        {/* Mostrar mensagem se não houver depósitos */}
-                        {(!profile?.deposits || profile.deposits.length === 0) && (
-                          <div className="text-center py-6">
-                            <p className="text-slate-400">Nenhum depósito encontrado</p>
-                            <p className="text-sm text-slate-500 mt-1">Seus depósitos aparecerão aqui</p>
-                          </div>
-                        )}
-
-                        {/* Mostrar depósitos recentes se houver */}
-                        {profile?.deposits?.slice(0, 3).map((deposit: any) => (
-                          <div key={deposit.id} className="bg-slate-800/50 rounded-lg p-3">
-                            <div className="flex items-center justify-between mb-1">
-                              <div>
-                                <p className="text-white font-medium">${Number(deposit.amount).toFixed(2)}</p>
-                                <p className="text-xs text-slate-400">
-                                  {new Date(deposit.created_at).toLocaleDateString("pt-BR")}
-                                </p>
-                              </div>
-                              <Badge
-                                className={
-                                  deposit.status === "completed"
-                                    ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
-                                    : deposit.status === "pending"
-                                      ? "bg-amber-500/20 text-amber-400 border-amber-500/30"
-                                      : "bg-red-500/20 text-red-400 border-red-500/30"
-                                }
-                              >
-                                {deposit.status === "completed"
-                                  ? "Confirmado"
-                                  : deposit.status === "pending"
-                                    ? "Pendente"
-                                    : "Falhou"}
-                              </Badge>
+                        <div className="bg-slate-800/50 rounded-lg p-3">
+                          <div className="flex items-center justify-between mb-1">
+                            <div>
+                              <p className="text-white font-medium">$0.00</p>
+                              <p className="text-xs text-slate-400">12 Mai 2025, 10:25</p>
                             </div>
+                            <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+                              Confirmado
+                            </Badge>
                           </div>
-                        ))}
+                        </div>
+
+                        <div className="bg-slate-800/50 rounded-lg p-3">
+                          <div className="flex items-center justify-between mb-1">
+                            <div>
+                              <p className="text-white font-medium">$0.00</p>
+                              <p className="text-xs text-slate-400">5 Mai 2025, 14:30</p>
+                            </div>
+                            <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+                              Confirmado
+                            </Badge>
+                          </div>
+                        </div>
 
                         <Button
                           variant="outline"
                           className="w-full border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-white"
-                          onClick={() => (window.location.href = "/dashboard/transactions?type=deposit")}
                         >
                           Ver Histórico Completo
                         </Button>
@@ -631,41 +540,26 @@ export default function DepositPage() {
                       <div className="bg-slate-800 rounded-md p-4 space-y-2">
                         <div className="flex items-center justify-between text-sm">
                           <span className="text-slate-400">Rentabilidade diária</span>
-                          <span className="text-white">{systemSettings.daily_rate || 4.5}%</span>
+                          <span className="text-white">4.5%</span>
                         </div>
                         <div className="flex items-center justify-between text-sm">
                           <span className="text-slate-400">Duração do contrato</span>
-                          <span className="text-white">{systemSettings.contract_days || 100} dias</span>
+                          <span className="text-white">100 dias</span>
                         </div>
                         <div className="flex items-center justify-between text-sm">
                           <span className="text-slate-400">Ganho estimado</span>
                           <span className="text-emerald-400">
-                            ${((Number(reinvestAmount) * (systemSettings.daily_rate || 4.5)) / 100).toFixed(2)}/dia
+                            ${(Number.parseFloat(reinvestAmount) * 4.5).toFixed(2)}
                           </span>
                         </div>
                       </div>
 
                       <Button
                         className="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500"
-                        disabled={
-                          isLoading ||
-                          !reinvestAmount ||
-                          Number(reinvestAmount) <= 0 ||
-                          Number(reinvestAmount) > availableBalance
-                        }
-                        onClick={handleReinvest}
+                        disabled={!reinvestAmount || Number.parseFloat(reinvestAmount) <= 0}
                       >
-                        {isLoading ? (
-                          <>
-                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                            Processando...
-                          </>
-                        ) : (
-                          <>
-                            <RefreshCw className="mr-2 h-4 w-4" />
-                            Confirmar Reinvestimento
-                          </>
-                        )}
+                        <RefreshCw className="mr-2 h-4 w-4" />
+                        Confirmar Reinvestimento
                       </Button>
                     </div>
                   </CardContent>
@@ -698,8 +592,7 @@ export default function DepositPage() {
                           <div>
                             <h4 className="text-white font-medium">Sem taxas adicionais</h4>
                             <p className="text-slate-400 text-sm">
-                              Reinvestimentos não possuem taxas, diferente dos saques que têm uma taxa de{" "}
-                              {systemSettings.withdrawal_fee || 6}%.
+                              Reinvestimentos não possuem taxas, diferente dos saques que têm uma taxa de 6%.
                             </p>
                           </div>
                         </div>
@@ -726,43 +619,29 @@ export default function DepositPage() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-3">
-                        {/* Mostrar mensagem se não houver reinvestimentos */}
-                        {(!profile?.investments ||
-                          profile.investments.filter((i) => i.source === "reinvestment").length === 0) && (
-                          <div className="text-center py-6">
-                            <p className="text-slate-400">Nenhum reinvestimento encontrado</p>
-                            <p className="text-sm text-slate-500 mt-1">Seus reinvestimentos aparecerão aqui</p>
-                          </div>
-                        )}
-
-                        {/* Mostrar reinvestimentos recentes se houver */}
-                        {profile?.investments
-                          ?.filter((i) => i.source === "reinvestment")
-                          .slice(0, 3)
-                          .map((investment: any) => (
-                            <div key={investment.id} className="bg-slate-800/50 rounded-lg p-3">
-                              <div className="flex items-center justify-between mb-1">
-                                <div>
-                                  <p className="text-white font-medium">${Number(investment.amount).toFixed(2)}</p>
-                                  <p className="text-xs text-slate-400">
-                                    {new Date(investment.created_at).toLocaleDateString("pt-BR")}
-                                  </p>
-                                </div>
-                                <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
-                                  {investment.status === "active"
-                                    ? "Ativo"
-                                    : investment.status === "completed"
-                                      ? "Concluído"
-                                      : "Cancelado"}
-                                </Badge>
-                              </div>
+                        <div className="bg-slate-800/50 rounded-lg p-3">
+                          <div className="flex items-center justify-between mb-1">
+                            <div>
+                              <p className="text-white font-medium">$0.00</p>
+                              <p className="text-xs text-slate-400">14 Mai 2025, 09:15</p>
                             </div>
-                          ))}
+                            <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">Ativo</Badge>
+                          </div>
+                        </div>
+
+                        <div className="bg-slate-800/50 rounded-lg p-3">
+                          <div className="flex items-center justify-between mb-1">
+                            <div>
+                              <p className="text-white font-medium">$0.00</p>
+                              <p className="text-xs text-slate-400">1 Mai 2025, 11:30</p>
+                            </div>
+                            <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">Ativo</Badge>
+                          </div>
+                        </div>
 
                         <Button
                           variant="outline"
                           className="w-full border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-white"
-                          onClick={() => (window.location.href = "/dashboard/transactions?type=reinvestment")}
                         >
                           Ver Histórico Completo
                         </Button>
@@ -775,7 +654,6 @@ export default function DepositPage() {
 
             {/* Tab da Calculadora */}
             <TabsContent value="calculator" className="mt-6">
-              {/* Conteúdo da calculadora (mantido igual) */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <Card className="bg-slate-900 border-slate-800">
                   <CardHeader className="pb-2">
@@ -822,7 +700,7 @@ export default function DepositPage() {
                       <div className="space-y-2">
                         <Label>Taxa de Rentabilidade</Label>
                         <div className="flex items-center gap-2 p-3 bg-slate-800 rounded-md border border-slate-700">
-                          <span className="text-white font-medium">{systemSettings.daily_rate || 4.5}% ao dia</span>
+                          <span className="text-white font-medium">4.5% ao dia</span>
                           <Badge className="bg-emerald-500 ml-auto">Fixa</Badge>
                         </div>
                       </div>
@@ -830,7 +708,9 @@ export default function DepositPage() {
                       <div className="bg-slate-800 rounded-md p-4 space-y-3">
                         <div className="flex items-center justify-between">
                           <span className="text-slate-400">Investimento inicial</span>
-                          <span className="text-white font-medium">{formatCurrency(Number(calcAmount) || 0)}</span>
+                          <span className="text-white font-medium">
+                            {formatCurrency(Number.parseFloat(calcAmount) || 0)}
+                          </span>
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-slate-400">Ganho diário inicial</span>
@@ -880,7 +760,7 @@ export default function DepositPage() {
                         <div className="flex h-full items-end gap-1">
                           {compoundResults.dailyValues &&
                             compoundResults.dailyValues.slice(0, 30).map((dayData, i) => {
-                              const principal = Number(calcAmount) || 0
+                              const principal = Number.parseFloat(calcAmount) || 0
                               const height = principal > 0 ? (dayData.value / (principal * 2)) * 100 : 0
                               const displayDay = Math.ceil((i + 1) * (calcDays / Math.min(30, calcDays)))
 
@@ -952,6 +832,78 @@ export default function DepositPage() {
                           </AccordionContent>
                         </AccordionItem>
                       </Accordion>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-slate-900 border-slate-800">
+                    <CardHeader className="pb-2 flex flex-row items-center justify-between">
+                      <CardTitle className="text-lg font-medium text-white">Exemplo de Crescimento</CardTitle>
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-8 border-slate-700 text-slate-400 hover:bg-slate-800"
+                          onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                          disabled={currentPage === 1}
+                        >
+                          Anterior
+                        </Button>
+                        <span className="text-xs text-slate-400">
+                          {currentPage} / {totalPages}
+                        </span>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-8 border-slate-700 text-slate-400 hover:bg-slate-800"
+                          onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                          disabled={currentPage === totalPages}
+                        >
+                          Próxima
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        <div className="text-sm text-slate-400 mb-2">
+                          Veja como ${Number.parseFloat(calcAmount).toFixed(2)} cresceria nos 100 dias com
+                          reinvestimento diário:
+                        </div>
+                        <div className="max-h-64 overflow-y-auto pr-2 space-y-2">
+                          {paginatedDailyValues.map((day, index) => {
+                            const isSpecialDay = day.day === 25 || day.day === 50 || day.day === 75 || day.day === 100
+                            const dayIndex = (currentPage - 1) * itemsPerPage + index
+
+                            return (
+                              <div
+                                key={dayIndex}
+                                className={`bg-slate-800/50 rounded-lg p-2 ${
+                                  isSpecialDay ? "bg-emerald-900/30 border border-emerald-500/30" : ""
+                                }`}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <span className={`text-white ${isSpecialDay ? "font-medium" : ""}`}>
+                                    Dia {day.day}
+                                  </span>
+                                  <span
+                                    className={`font-medium ${
+                                      isSpecialDay ? "text-emerald-300 text-lg" : "text-emerald-400"
+                                    }`}
+                                  >
+                                    {formatCurrency(day.value)}
+                                  </span>
+                                </div>
+                                <div className="text-xs text-slate-400 mt-1">
+                                  +{formatCurrency(day.interest)} de rendimento (4.5%)
+                                </div>
+                                {day.day === 100 && (
+                                  <div className="text-xs text-emerald-300 mt-1 font-medium">
+                                    Valor final após 100 dias: {formatCurrency(compoundResults.total)}
+                                  </div>
+                                )}
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
                     </CardContent>
                   </Card>
                 </div>
