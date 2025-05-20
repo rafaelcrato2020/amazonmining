@@ -1,0 +1,2 @@
+# Ignorar todo o diretório app/ durante o deploy
+app/

@@ -7,6 +7,7 @@ const nextConfig = {
   },
   experimental: {
     serverActions: true,
+    appDir: false, // Desabilitar o App Router
   },
   eslint: {
     ignoreDuringBuilds: true,
