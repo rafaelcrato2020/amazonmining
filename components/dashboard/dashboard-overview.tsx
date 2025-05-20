@@ -1,258 +1,140 @@
 "use client"
 
-import type React from "react"
-
+import { useState, useEffect } from "react"
+import { Wallet, TrendingUp, Users } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { DollarSign, TrendingUp, Users, Clock, Wallet } from "lucide-react"
-import { PageHeader } from "./page-header"
+import { createClientComponentClient } from "@/lib/supabase"
 
 export function DashboardOverview() {
+  const [stats, setStats] = useState({
+    balance: 0,
+    activeInvestment: 0,
+    totalEarnings: 0,
+    referrals: 0,
+    daysRemaining: 0,
+  })
+  const [loading, setLoading] = useState(true)
+  const supabase = createClientComponentClient()
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession()
+
+        if (!session) return
+
+        // Buscar perfil do usuário
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("balance, active_investment, days_remaining")
+          .eq("id", session.user.id)
+          .single()
+
+        // Buscar total de ganhos
+        const { data: earnings } = await supabase
+          .from("transactions")
+          .select("amount")
+          .eq("user_id", session.user.id)
+          .in("type", ["interest", "referral_bonus"])
+
+        const totalEarnings = earnings?.reduce((sum, item) => sum + Number(item.amount), 0) || 0
+
+        // Buscar total de indicados
+        const { count: referralsCount } = await supabase
+          .from("profiles")
+          .select("*", { count: "exact", head: true })
+          .eq("referred_by", session.user.id)
+
+        setStats({
+          balance: profile?.balance || 0,
+          activeInvestment: profile?.active_investment || 0,
+          totalEarnings,
+          referrals: referralsCount || 0,
+          daysRemaining: profile?.days_remaining || 0,
+        })
+      } catch (error) {
+        console.error("Erro ao buscar estatísticas:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchStats()
+  }, [supabase])
+
   return (
-    <div className="p-4 md:p-6">
-      <PageHeader title="Visão Geral" />
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold">Dashboard</h1>
 
-      <h2 className="text-2xl font-bold text-white mb-6">Visão Geral</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-slate-400">Saldo Disponível</CardTitle>
+            <Wallet className="h-4 w-4 text-emerald-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {loading ? (
+                <div className="h-8 w-24 bg-slate-700 animate-pulse rounded"></div>
+              ) : (
+                `$${stats.balance.toFixed(2)}`
+              )}
+            </div>
+            <p className="text-xs text-slate-500 mt-1">Disponível para saque ou reinvestimento</p>
+          </CardContent>
+        </Card>
 
-      <Tabs defaultValue="daily" className="mb-6">
-        <div className="flex items-center justify-between">
-          <TabsList className="bg-slate-800">
-            <TabsTrigger value="daily">Diário</TabsTrigger>
-            <TabsTrigger value="weekly">Semanal</TabsTrigger>
-            <TabsTrigger value="monthly">Mensal</TabsTrigger>
-          </TabsList>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-slate-400">Investimento Ativo</CardTitle>
+            <TrendingUp className="h-4 w-4 text-blue-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {loading ? (
+                <div className="h-8 w-24 bg-slate-700 animate-pulse rounded"></div>
+              ) : (
+                `$${stats.activeInvestment.toFixed(2)}`
+              )}
+            </div>
+            <p className="text-xs text-slate-500 mt-1">Total investido atualmente</p>
+          </CardContent>
+        </Card>
 
-          <div className="text-sm text-slate-400">Atualizado em: {new Date().toLocaleString()}</div>
-        </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-slate-400">Total de Ganhos</CardTitle>
+            <TrendingUp className="h-4 w-4 text-green-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {loading ? (
+                <div className="h-8 w-24 bg-slate-700 animate-pulse rounded"></div>
+              ) : (
+                `$${stats.totalEarnings.toFixed(2)}`
+              )}
+            </div>
+            <p className="text-xs text-slate-500 mt-1">Rendimentos + Comissões</p>
+          </CardContent>
+        </Card>
 
-        <TabsContent value="daily" className="mt-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-            {/* Card de saldo disponível - movido da sidebar */}
-            <Card className="bg-slate-900 border-slate-800">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-slate-400">Saldo Disponível</CardTitle>
-                <Wallet className="h-5 w-5 text-emerald-400" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">$0.00</div>
-                <p className="text-xs text-slate-400 mt-1">Atualizado hoje</p>
-              </CardContent>
-            </Card>
-
-            <StatCard
-              title="Ganhos Totais"
-              value="$0.00"
-              description="Atualizado hoje"
-              icon={<DollarSign className="h-5 w-5 text-emerald-400" />}
-            />
-            <StatCard
-              title="Rentabilidade"
-              value="4.5%"
-              description="Fixa por 100 dias"
-              icon={<TrendingUp className="h-5 w-5 text-emerald-400" />}
-              additionalContent={
-                <div className="mt-2 pt-2 border-t border-slate-800">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-slate-400">Saldo Investido:</span>
-                    <span className="text-sm font-medium text-white">$0.00</span>
-                  </div>
-                  <div className="flex items-center justify-between mt-1">
-                    <span className="text-xs text-slate-400">Rendimento Diário:</span>
-                    <span className="text-sm font-medium text-emerald-400">$0.00</span>
-                  </div>
-                </div>
-              }
-            />
-            <StatCard
-              title="Indicações"
-              value="0"
-              description="Atualizado hoje"
-              icon={<Users className="h-5 w-5 text-emerald-400" />}
-            />
-            <StatCard
-              title="Dias Restantes"
-              value="78"
-              description="De 100 dias"
-              icon={<Clock className="h-5 w-5 text-emerald-400" />}
-            />
-          </div>
-        </TabsContent>
-
-        <TabsContent value="weekly" className="mt-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-            {/* Card de saldo disponível - movido da sidebar */}
-            <Card className="bg-slate-900 border-slate-800">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-slate-400">Saldo Disponível</CardTitle>
-                <Wallet className="h-5 w-5 text-emerald-400" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">$0.00</div>
-                <p className="text-xs text-slate-400 mt-1">Atualizado esta semana</p>
-              </CardContent>
-            </Card>
-
-            <StatCard
-              title="Ganhos Totais"
-              value="$0.00"
-              description="Atualizado esta semana"
-              icon={<DollarSign className="h-5 w-5 text-emerald-400" />}
-            />
-            <StatCard
-              title="Rentabilidade"
-              value="4.5%"
-              description="Fixa por 100 dias"
-              icon={<TrendingUp className="h-5 w-5 text-emerald-400" />}
-              additionalContent={
-                <div className="mt-2 pt-2 border-t border-slate-800">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-slate-400">Saldo Investido:</span>
-                    <span className="text-sm font-medium text-white">$0.00</span>
-                  </div>
-                  <div className="flex items-center justify-between mt-1">
-                    <span className="text-xs text-slate-400">Rendimento Semanal:</span>
-                    <span className="text-sm font-medium text-emerald-400">$0.00</span>
-                  </div>
-                </div>
-              }
-            />
-            <StatCard
-              title="Indicações"
-              value="0"
-              description="Atualizado esta semana"
-              icon={<Users className="h-5 w-5 text-emerald-400" />}
-            />
-            <StatCard
-              title="Dias Restantes"
-              value="78"
-              description="De 100 dias"
-              icon={<Clock className="h-5 w-5 text-emerald-400" />}
-            />
-          </div>
-        </TabsContent>
-
-        <TabsContent value="monthly" className="mt-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-            {/* Card de saldo disponível - movido da sidebar */}
-            <Card className="bg-slate-900 border-slate-800">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-slate-400">Saldo Disponível</CardTitle>
-                <Wallet className="h-5 w-5 text-emerald-400" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">$0.00</div>
-                <p className="text-xs text-slate-400 mt-1">Atualizado este mês</p>
-              </CardContent>
-            </Card>
-
-            <StatCard
-              title="Ganhos Totais"
-              value="$0.00"
-              description="Atualizado este mês"
-              icon={<DollarSign className="h-5 w-5 text-emerald-400" />}
-            />
-            <StatCard
-              title="Rentabilidade"
-              value="4.5%"
-              description="Fixa por 100 dias"
-              icon={<TrendingUp className="h-5 w-5 text-emerald-400" />}
-              additionalContent={
-                <div className="mt-2 pt-2 border-t border-slate-800">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-slate-400">Saldo Investido:</span>
-                    <span className="text-sm font-medium text-white">$0.00</span>
-                  </div>
-                  <div className="flex items-center justify-between mt-1">
-                    <span className="text-xs text-slate-400">Rendimento Mensal:</span>
-                    <span className="text-sm font-medium text-emerald-400">$0.00</span>
-                  </div>
-                </div>
-              }
-            />
-            <StatCard
-              title="Indicações"
-              value="0"
-              description="Atualizado este mês"
-              icon={<Users className="h-5 w-5 text-emerald-400" />}
-            />
-            <StatCard
-              title="Dias Restantes"
-              value="78"
-              description="De 100 dias"
-              icon={<Clock className="h-5 w-5 text-emerald-400" />}
-            />
-          </div>
-        </TabsContent>
-      </Tabs>
-
-      <div className="bg-slate-900 border border-slate-800 rounded-lg p-6 mb-6">
-        <h3 className="text-lg font-medium text-white mb-4">Histórico de Ganhos</h3>
-        <div className="h-64 w-full">
-          <div className="flex h-full items-end gap-2">
-            {Array.from({ length: 30 }).map((_, i) => {
-              const height = Math.floor(Math.random() * 100)
-              return (
-                <div
-                  key={i}
-                  className="bg-gradient-to-t from-emerald-600 to-cyan-600 rounded-t-sm w-full"
-                  style={{ height: `${height}%` }}
-                >
-                  <div className="w-full h-full hover:bg-white/10 transition-colors"></div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-        <div className="flex justify-between mt-2 text-xs text-slate-400">
-          <span>1 Mai</span>
-          <span>15 Mai</span>
-          <span>30 Mai</span>
-        </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-slate-400">Indicações</CardTitle>
+            <Users className="h-4 w-4 text-purple-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {loading ? <div className="h-8 w-24 bg-slate-700 animate-pulse rounded"></div> : stats.referrals}
+            </div>
+            <p className="text-xs text-slate-500 mt-1">Total de usuários indicados</p>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Amazon Mining Logo with Servers - New Image */}
-      <div className="bg-slate-900 border border-slate-800 rounded-lg overflow-hidden mb-6">
-        <div className="p-6">
-          <div className="relative w-full bg-slate-800 rounded-lg overflow-hidden">
-            <img
-              src="/images/amazon-mining-logo-servers.jpeg"
-              alt="Amazon Mining - Infraestrutura de Servidores"
-              className="w-full h-auto hover:scale-105 transition-transform duration-700"
-            />
-          </div>
-          <div className="mt-4">
-            <h3 className="text-2xl font-bold text-white mb-2">Infraestrutura de Ponta</h3>
-            <p className="text-slate-300">
-              Nossa tecnologia de mineração utiliza servidores de última geração, garantindo máxima eficiência e
-              rentabilidade para todos os nossos investidores.
-            </p>
-          </div>
-        </div>
-      </div>
+      {/* Mais conteúdo do dashboard pode ser adicionado aqui */}
     </div>
-  )
-}
-
-interface StatCardProps {
-  title: string
-  value: string
-  description: string
-  icon: React.ReactNode
-  additionalContent?: React.ReactNode
-}
-
-function StatCard({ title, value, description, icon, additionalContent }: StatCardProps) {
-  return (
-    <Card className="bg-slate-900 border-slate-800">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium text-slate-400">{title}</CardTitle>
-        {icon}
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold text-white">{value}</div>
-        <p className="text-xs text-slate-400 mt-1">{description}</p>
-        {additionalContent}
-      </CardContent>
-    </Card>
   )
 }
