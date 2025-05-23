@@ -3,6 +3,7 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { AuthModal } from "@/components/auth-modal"
 import { FloatingLogo } from "./floating-logo"
+import Image from "next/image"
 
 export function HeroSection() {
   return (
@@ -44,6 +45,23 @@ export function HeroSection() {
           >
             Saiba mais
           </Button>
+          <a
+            href="https://t.me/amazonmining"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-6 py-2 bg-[#0088cc] hover:bg-[#0099dd] text-white font-medium rounded-lg transition-colors"
+          >
+            <div className="w-6 h-6 relative">
+              <Image
+                src="/images/telegram-icon.jpeg"
+                alt="Telegram"
+                width={24}
+                height={24}
+                className="w-full h-full object-contain rounded"
+              />
+            </div>
+            Canal do Telegram
+          </a>
         </div>
 
         {/* Logo da Amazon Mining com servidores */}

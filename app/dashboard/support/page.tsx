@@ -11,13 +11,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { HelpCircle, MessageSquare, Mail, Phone, Send, Loader2, Check } from "lucide-react"
-import { useSidebar } from "@/contexts/sidebar-context"
-import { cn } from "@/lib/utils"
-import { DashboardHeader } from "@/components/dashboard/dashboard-header"
-import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar"
 
 export default function SupportPage() {
-  const { isOpen } = useSidebar()
   const [isLoading, setIsLoading] = useState(false)
   const [isSent, setIsSent] = useState(false)
 
@@ -77,221 +72,211 @@ export default function SupportPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-slate-950 flex">
-      <DashboardSidebar />
-      <div className={cn("flex-1 transition-all duration-300 ease-in-out", isOpen ? "md:ml-64" : "md:ml-20")}>
-        <DashboardHeader />
-        <main className="p-4 md:p-6">
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold text-white mb-2">Suporte</h1>
-            <p className="text-slate-400">Tire suas dúvidas ou entre em contato com nossa equipe de suporte.</p>
-          </div>
+    <div className="w-full">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-white mb-2">Suporte</h1>
+        <p className="text-slate-400">Tire suas dúvidas ou entre em contato com nossa equipe de suporte.</p>
+      </div>
 
-          <Tabs defaultValue="faq" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 bg-slate-800">
-              <TabsTrigger value="faq">
-                <HelpCircle className="mr-2 h-4 w-4" />
-                FAQ
-              </TabsTrigger>
-              <TabsTrigger value="contact">
-                <MessageSquare className="mr-2 h-4 w-4" />
-                Contato
-              </TabsTrigger>
-              <TabsTrigger value="channels">
-                <Mail className="mr-2 h-4 w-4" />
-                Canais de Atendimento
-              </TabsTrigger>
-            </TabsList>
+      <Tabs defaultValue="faq" className="w-full">
+        <TabsList className="grid w-full grid-cols-3 bg-slate-800">
+          <TabsTrigger value="faq">
+            <HelpCircle className="mr-2 h-4 w-4" />
+            FAQ
+          </TabsTrigger>
+          <TabsTrigger value="contact">
+            <MessageSquare className="mr-2 h-4 w-4" />
+            Contato
+          </TabsTrigger>
+          <TabsTrigger value="channels">
+            <Mail className="mr-2 h-4 w-4" />
+            Canais de Atendimento
+          </TabsTrigger>
+        </TabsList>
 
-            {/* Aba de FAQ */}
-            <TabsContent value="faq" className="mt-6">
-              <Card className="bg-slate-900 border-slate-800">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-lg font-medium text-white">Perguntas Frequentes</CardTitle>
-                  <CardDescription>
-                    Encontre respostas para as dúvidas mais comuns sobre a Amazon Mining.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Accordion type="single" collapsible className="w-full">
-                    {faqItems.map((item, index) => (
-                      <AccordionItem key={index} value={`item-${index}`} className="border-slate-800">
-                        <AccordionTrigger className="text-white hover:text-emerald-400">
-                          {item.question}
-                        </AccordionTrigger>
-                        <AccordionContent className="text-slate-400">{item.answer}</AccordionContent>
-                      </AccordionItem>
-                    ))}
-                  </Accordion>
-                </CardContent>
-              </Card>
-            </TabsContent>
+        {/* Aba de FAQ */}
+        <TabsContent value="faq" className="mt-6">
+          <Card className="bg-slate-900 border-slate-800">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg font-medium text-white">Perguntas Frequentes</CardTitle>
+              <CardDescription>Encontre respostas para as dúvidas mais comuns sobre a Amazon Mining.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Accordion type="single" collapsible className="w-full">
+                {faqItems.map((item, index) => (
+                  <AccordionItem key={index} value={`item-${index}`} className="border-slate-800">
+                    <AccordionTrigger className="text-white hover:text-emerald-400">{item.question}</AccordionTrigger>
+                    <AccordionContent className="text-slate-400">{item.answer}</AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-            {/* Aba de Contato */}
-            <TabsContent value="contact" className="mt-6">
-              <Card className="bg-slate-900 border-slate-800">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-lg font-medium text-white">Fale Conosco</CardTitle>
-                  <CardDescription>Envie sua mensagem e nossa equipe responderá em até 24 horas.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Nome</Label>
-                        <Input id="name" placeholder="Seu nome" className="bg-slate-800 border-slate-700" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          placeholder="seu@email.com"
-                          className="bg-slate-800 border-slate-700"
-                        />
-                      </div>
+        {/* Aba de Contato */}
+        <TabsContent value="contact" className="mt-6">
+          <Card className="bg-slate-900 border-slate-800">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg font-medium text-white">Fale Conosco</CardTitle>
+              <CardDescription>Envie sua mensagem e nossa equipe responderá em até 24 horas.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Nome</Label>
+                    <Input id="name" placeholder="Seu nome" className="bg-slate-800 border-slate-700" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="seu@email.com"
+                      className="bg-slate-800 border-slate-700"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="subject">Assunto</Label>
+                  <Input id="subject" placeholder="Assunto da mensagem" className="bg-slate-800 border-slate-700" />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="message">Mensagem</Label>
+                  <Textarea
+                    id="message"
+                    placeholder="Descreva sua dúvida ou problema em detalhes..."
+                    className="bg-slate-800 border-slate-700 min-h-[150px]"
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Enviando...
+                    </>
+                  ) : isSent ? (
+                    <>
+                      <Check className="mr-2 h-4 w-4" />
+                      Mensagem enviada!
+                    </>
+                  ) : (
+                    <>
+                      <Send className="mr-2 h-4 w-4" />
+                      Enviar Mensagem
+                    </>
+                  )}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Aba de Canais de Atendimento */}
+        <TabsContent value="channels" className="mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="bg-slate-900 border-slate-800">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg font-medium text-white">Canais de Atendimento</CardTitle>
+                <CardDescription>Escolha a melhor forma de entrar em contato conosco.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                      <Mail className="h-5 w-5 text-emerald-400" />
                     </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="subject">Assunto</Label>
-                      <Input id="subject" placeholder="Assunto da mensagem" className="bg-slate-800 border-slate-700" />
+                    <div>
+                      <h3 className="text-white font-medium">Email</h3>
+                      <p className="text-slate-400 text-sm mb-2">Resposta em até 24 horas</p>
+                      <a href="mailto:suporte@amazonmining.com" className="text-emerald-400 hover:underline">
+                        suporte@amazonmining.com
+                      </a>
                     </div>
+                  </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="message">Mensagem</Label>
-                      <Textarea
-                        id="message"
-                        placeholder="Descreva sua dúvida ou problema em detalhes..."
-                        className="bg-slate-800 border-slate-700 min-h-[150px]"
-                      />
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                      <MessageSquare className="h-5 w-5 text-emerald-400" />
                     </div>
-
-                    <Button
-                      type="submit"
-                      className="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500"
-                      disabled={isLoading}
-                    >
-                      {isLoading ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Enviando...
-                        </>
-                      ) : isSent ? (
-                        <>
-                          <Check className="mr-2 h-4 w-4" />
-                          Mensagem enviada!
-                        </>
-                      ) : (
-                        <>
-                          <Send className="mr-2 h-4 w-4" />
-                          Enviar Mensagem
-                        </>
-                      )}
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            {/* Aba de Canais de Atendimento */}
-            <TabsContent value="channels" className="mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card className="bg-slate-900 border-slate-800">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-lg font-medium text-white">Canais de Atendimento</CardTitle>
-                    <CardDescription>Escolha a melhor forma de entrar em contato conosco.</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-6">
-                      <div className="flex items-start gap-4">
-                        <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
-                          <Mail className="h-5 w-5 text-emerald-400" />
-                        </div>
-                        <div>
-                          <h3 className="text-white font-medium">Email</h3>
-                          <p className="text-slate-400 text-sm mb-2">Resposta em até 24 horas</p>
-                          <a href="mailto:suporte@amazonmining.com" className="text-emerald-400 hover:underline">
-                            suporte@amazonmining.com
-                          </a>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-4">
-                        <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
-                          <MessageSquare className="h-5 w-5 text-emerald-400" />
-                        </div>
-                        <div>
-                          <h3 className="text-white font-medium">Chat Online</h3>
-                          <p className="text-slate-400 text-sm mb-2">Disponível de segunda a sexta, das 9h às 18h</p>
-                          <Button className="bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500">
-                            Iniciar Chat
-                          </Button>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-4">
-                        <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
-                          <Phone className="h-5 w-5 text-emerald-400" />
-                        </div>
-                        <div>
-                          <h3 className="text-white font-medium">Telefone</h3>
-                          <p className="text-slate-400 text-sm mb-2">Atendimento de segunda a sexta, das 9h às 18h</p>
-                          <a href="tel:+551199999999" className="text-emerald-400 hover:underline">
-                            +55 11 9999-9999
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-slate-900 border-slate-800">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-lg font-medium text-white">Horário de Atendimento</CardTitle>
-                    <CardDescription>Nossos horários de disponibilidade para atendimento.</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="bg-slate-800 rounded-lg p-4">
-                        <h3 className="text-white font-medium mb-2">Suporte por Email</h3>
-                        <p className="text-slate-400 text-sm">24 horas por dia, 7 dias por semana</p>
-                        <p className="text-slate-400 text-sm">Tempo de resposta: até 24 horas</p>
-                      </div>
-
-                      <div className="bg-slate-800 rounded-lg p-4">
-                        <h3 className="text-white font-medium mb-2">Chat Online</h3>
-                        <p className="text-slate-400 text-sm">Segunda a Sexta: 9h às 18h</p>
-                        <p className="text-slate-400 text-sm">Sábado: 9h às 13h</p>
-                        <p className="text-slate-400 text-sm">Domingo e Feriados: Fechado</p>
-                      </div>
-
-                      <div className="bg-slate-800 rounded-lg p-4">
-                        <h3 className="text-white font-medium mb-2">Atendimento Telefônico</h3>
-                        <p className="text-slate-400 text-sm">Segunda a Sexta: 9h às 18h</p>
-                        <p className="text-slate-400 text-sm">Sábado, Domingo e Feriados: Fechado</p>
-                      </div>
-                    </div>
-
-                    <div className="mt-6 bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-4">
-                      <h3 className="text-emerald-400 font-medium mb-2 flex items-center">
-                        <HelpCircle className="mr-2 h-4 w-4" />
-                        Precisa de ajuda urgente?
-                      </h3>
-                      <p className="text-slate-400 text-sm mb-3">
-                        Para questões urgentes relacionadas a saques ou depósitos, utilize nosso chat online durante o
-                        horário comercial.
-                      </p>
-                      <Button className="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500">
-                        Suporte Prioritário
+                    <div>
+                      <h3 className="text-white font-medium">Chat Online</h3>
+                      <p className="text-slate-400 text-sm mb-2">Disponível de segunda a sexta, das 9h às 18h</p>
+                      <Button className="bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500">
+                        Iniciar Chat
                       </Button>
                     </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </main>
-      </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                      <Phone className="h-5 w-5 text-emerald-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-white font-medium">Telefone</h3>
+                      <p className="text-slate-400 text-sm mb-2">Atendimento de segunda a sexta, das 9h às 18h</p>
+                      <a href="tel:+551199999999" className="text-emerald-400 hover:underline">
+                        +55 11 9999-9999
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-slate-900 border-slate-800">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg font-medium text-white">Horário de Atendimento</CardTitle>
+                <CardDescription>Nossos horários de disponibilidade para atendimento.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="bg-slate-800 rounded-lg p-4">
+                    <h3 className="text-white font-medium mb-2">Suporte por Email</h3>
+                    <p className="text-slate-400 text-sm">24 horas por dia, 7 dias por semana</p>
+                    <p className="text-slate-400 text-sm">Tempo de resposta: até 24 horas</p>
+                  </div>
+
+                  <div className="bg-slate-800 rounded-lg p-4">
+                    <h3 className="text-white font-medium mb-2">Chat Online</h3>
+                    <p className="text-slate-400 text-sm">Segunda a Sexta: 9h às 18h</p>
+                    <p className="text-slate-400 text-sm">Sábado: 9h às 13h</p>
+                    <p className="text-slate-400 text-sm">Domingo e Feriados: Fechado</p>
+                  </div>
+
+                  <div className="bg-slate-800 rounded-lg p-4">
+                    <h3 className="text-white font-medium mb-2">Atendimento Telefônico</h3>
+                    <p className="text-slate-400 text-sm">Segunda a Sexta: 9h às 18h</p>
+                    <p className="text-slate-400 text-sm">Sábado, Domingo e Feriados: Fechado</p>
+                  </div>
+                </div>
+
+                <div className="mt-6 bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-4">
+                  <h3 className="text-emerald-400 font-medium mb-2 flex items-center">
+                    <HelpCircle className="mr-2 h-4 w-4" />
+                    Precisa de ajuda urgente?
+                  </h3>
+                  <p className="text-slate-400 text-sm mb-3">
+                    Para questões urgentes relacionadas a saques ou depósitos, utilize nosso chat online durante o
+                    horário comercial.
+                  </p>
+                  <Button className="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500">
+                    Suporte Prioritário
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

@@ -9,10 +9,8 @@ import { PageHeader } from "./page-header"
 
 export function DashboardOverview() {
   return (
-    <div className="p-4 md:p-6">
+    <div>
       <PageHeader title="Visão Geral" />
-
-      <h2 className="text-2xl font-bold text-white mb-6">Visão Geral</h2>
 
       <Tabs defaultValue="daily" className="mb-6">
         <div className="flex items-center justify-between">
@@ -28,17 +26,12 @@ export function DashboardOverview() {
         <TabsContent value="daily" className="mt-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
             {/* Card de saldo disponível - movido da sidebar */}
-            <Card className="bg-slate-900 border-slate-800">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-slate-400">Saldo Disponível</CardTitle>
-                <Wallet className="h-5 w-5 text-emerald-400" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">$0.00</div>
-                <p className="text-xs text-slate-400 mt-1">Atualizado hoje</p>
-              </CardContent>
-            </Card>
-
+            <StatCard
+              title="Saldo Disponível"
+              value="$0.00"
+              description="Atualizado hoje"
+              icon={<Wallet className="h-5 w-5 text-emerald-400" />}
+            />
             <StatCard
               title="Ganhos Totais"
               value="$0.00"
@@ -81,17 +74,12 @@ export function DashboardOverview() {
         <TabsContent value="weekly" className="mt-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
             {/* Card de saldo disponível - movido da sidebar */}
-            <Card className="bg-slate-900 border-slate-800">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-slate-400">Saldo Disponível</CardTitle>
-                <Wallet className="h-5 w-5 text-emerald-400" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">$0.00</div>
-                <p className="text-xs text-slate-400 mt-1">Atualizado esta semana</p>
-              </CardContent>
-            </Card>
-
+            <StatCard
+              title="Saldo Disponível"
+              value="$0.00"
+              description="Atualizado esta semana"
+              icon={<Wallet className="h-5 w-5 text-emerald-400" />}
+            />
             <StatCard
               title="Ganhos Totais"
               value="$0.00"
@@ -134,17 +122,12 @@ export function DashboardOverview() {
         <TabsContent value="monthly" className="mt-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
             {/* Card de saldo disponível - movido da sidebar */}
-            <Card className="bg-slate-900 border-slate-800">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-slate-400">Saldo Disponível</CardTitle>
-                <Wallet className="h-5 w-5 text-emerald-400" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">$0.00</div>
-                <p className="text-xs text-slate-400 mt-1">Atualizado este mês</p>
-              </CardContent>
-            </Card>
-
+            <StatCard
+              title="Saldo Disponível"
+              value="$0.00"
+              description="Atualizado este mês"
+              icon={<Wallet className="h-5 w-5 text-emerald-400" />}
+            />
             <StatCard
               title="Ganhos Totais"
               value="$0.00"

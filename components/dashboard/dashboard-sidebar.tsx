@@ -14,8 +14,8 @@ import {
   PlusCircle,
   FileText,
   LogOut,
-  RefreshCw,
   ChevronRight,
+  Percent,
 } from "lucide-react"
 import { FloatingLogo } from "../floating-logo"
 import { useSidebar } from "@/contexts/sidebar-context"
@@ -27,21 +27,20 @@ export function DashboardSidebar() {
   const pathname = usePathname()
   const { isVisible, toggleSidebar } = useSidebar()
 
+  // Menu organizado por categorias (removido "Indicações")
   const menuItems = [
+    // Categoria: Principal
     {
       title: "Dashboard",
       icon: LayoutDashboard,
       href: "/dashboard",
     },
+
+    // Categoria: Financeiro
     {
       title: "Depósito",
       icon: PlusCircle,
       href: "/dashboard/deposit",
-    },
-    {
-      title: "Reinvestir",
-      icon: RefreshCw,
-      href: "/dashboard/deposit?tab=reinvest",
     },
     {
       title: "Saque",
@@ -49,7 +48,14 @@ export function DashboardSidebar() {
       href: "/dashboard/withdraw",
     },
     {
-      title: "Planos de Recompensa",
+      title: "Extrato",
+      icon: FileText,
+      href: "/dashboard/transactions",
+    },
+
+    // Categoria: Programa de Recompensas
+    {
+      title: "Recompensas",
       icon: Award,
       href: "/dashboard/rewards",
     },
@@ -59,10 +65,12 @@ export function DashboardSidebar() {
       href: "/dashboard/career",
     },
     {
-      title: "Extrato",
-      icon: FileText,
-      href: "/dashboard/transactions",
+      title: "Bônus Residual",
+      icon: Percent,
+      href: "/dashboard/residual-bonus",
     },
+
+    // Categoria: Suporte e Configurações
     {
       title: "Configurações",
       icon: Settings,
@@ -107,32 +115,115 @@ export function DashboardSidebar() {
 
       <div className="flex-1 overflow-y-auto py-4">
         <nav className="px-4">
-          <ul className="space-y-1">
-            {menuItems.map((item) => {
-              const isActive = pathname === item.href
+          {/* Seção Principal */}
+          <div className="mb-4">
+            <h3 className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Principal</h3>
+            <ul className="mt-2 space-y-1">
+              {menuItems.slice(0, 1).map((item) => {
+                const isActive = pathname === item.href
+                return (
+                  <li key={item.title}>
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        "flex items-center gap-3 px-3 py-2 rounded-md transition-colors",
+                        isActive
+                          ? "bg-emerald-500/10 text-emerald-400"
+                          : "text-slate-400 hover:text-white hover:bg-slate-800",
+                      )}
+                    >
+                      <item.icon className="h-5 w-5 flex-shrink-0" />
+                      <span>{item.title}</span>
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
 
-              return (
-                <li key={item.title}>
-                  <Link
-                    href={item.href}
-                    className={cn(
-                      "flex items-center gap-3 px-3 py-2 rounded-md transition-colors",
-                      isActive
-                        ? "bg-emerald-500/10 text-emerald-400"
-                        : "text-slate-400 hover:text-white hover:bg-slate-800",
-                    )}
-                  >
-                    <item.icon className="h-5 w-5 flex-shrink-0" />
-                    <span>{item.title}</span>
-                  </Link>
-                </li>
-              )
-            })}
-          </ul>
+          {/* Seção Financeiro */}
+          <div className="mb-4">
+            <h3 className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Financeiro</h3>
+            <ul className="mt-2 space-y-1">
+              {menuItems.slice(1, 4).map((item) => {
+                const isActive = pathname === item.href
+                return (
+                  <li key={item.title}>
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        "flex items-center gap-3 px-3 py-2 rounded-md transition-colors",
+                        isActive
+                          ? "bg-emerald-500/10 text-emerald-400"
+                          : "text-slate-400 hover:text-white hover:bg-slate-800",
+                      )}
+                    >
+                      <item.icon className="h-5 w-5 flex-shrink-0" />
+                      <span>{item.title}</span>
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+
+          {/* Seção Programa de Recompensas */}
+          <div className="mb-4">
+            <h3 className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              Programa de Recompensas
+            </h3>
+            <ul className="mt-2 space-y-1">
+              {menuItems.slice(4, 7).map((item) => {
+                const isActive = pathname === item.href
+                return (
+                  <li key={item.title}>
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        "flex items-center gap-3 px-3 py-2 rounded-md transition-colors",
+                        isActive
+                          ? "bg-emerald-500/10 text-emerald-400"
+                          : "text-slate-400 hover:text-white hover:bg-slate-800",
+                      )}
+                    >
+                      <item.icon className="h-5 w-5 flex-shrink-0" />
+                      <span>{item.title}</span>
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+
+          {/* Seção Suporte e Configurações */}
+          <div>
+            <h3 className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Configurações</h3>
+            <ul className="mt-2 space-y-1">
+              {menuItems.slice(7, 9).map((item) => {
+                const isActive = pathname === item.href
+                return (
+                  <li key={item.title}>
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        "flex items-center gap-3 px-3 py-2 rounded-md transition-colors",
+                        isActive
+                          ? "bg-emerald-500/10 text-emerald-400"
+                          : "text-slate-400 hover:text-white hover:bg-slate-800",
+                      )}
+                    >
+                      <item.icon className="h-5 w-5 flex-shrink-0" />
+                      <span>{item.title}</span>
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
         </nav>
       </div>
 
-      {/* Botão de Sair em um container separado no final da barra */}
+      {/* Botão de Sair - removido o card de saldo */}
       <div className="p-4 border-t border-slate-800">
         <Button
           variant="ghost"

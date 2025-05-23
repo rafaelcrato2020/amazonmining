@@ -35,8 +35,7 @@ export function CareerSection() {
       value: 5000,
       icon: <Plane className="w-6 h-6 text-emerald-400" />,
       title: "Viagem + Setup",
-      description:
-        "Viagem para conhecer nossa operação no Brasil e no Paraguai, incluindo um setup para minerar no valor de $5000",
+      description: "Viagem + Setup",
     },
   ]
 
