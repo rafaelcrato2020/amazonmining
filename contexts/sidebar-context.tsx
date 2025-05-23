@@ -12,8 +12,11 @@ type SidebarContextType = {
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined)
 
 export function SidebarProvider({ children }: { children: ReactNode }) {
-  // Definimos o estado inicial como true para que a barra lateral comece visível
-  const [isVisible, setIsVisible] = useState(true)
+  // Alterado o estado inicial para false para que a barra lateral comece fechada
+  const [isVisible, setIsVisible] = useState(false)
+
+  // Removida a detecção de tamanho de tela que forçava a barra a abrir em desktops
+  // Agora a barra sempre começa fechada, independentemente do dispositivo
 
   const toggleSidebar = () => setIsVisible((prev) => !prev)
   const showSidebar = () => setIsVisible(true)

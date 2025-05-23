@@ -2,25 +2,28 @@
 
 import { usePathname } from "next/navigation"
 import Link from "next/link"
-import Image from "next/image"
+import { useRouter } from "next/navigation"
 import {
   LayoutDashboard,
   Award,
   Settings,
   HelpCircle,
+  ChevronLeft,
   Gift,
   DollarSign,
   PlusCircle,
   FileText,
+  LogOut,
   RefreshCw,
-  Percent,
-  ChevronLeft,
+  ChevronRight,
 } from "lucide-react"
+import { FloatingLogo } from "../floating-logo"
+import { useSidebar } from "@/contexts/sidebar-context"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { useSidebar } from "@/contexts/sidebar-context"
 
 export function DashboardSidebar() {
+  const router = useRouter()
   const pathname = usePathname()
   const { isVisible, toggleSidebar } = useSidebar()
 
@@ -72,30 +75,30 @@ export function DashboardSidebar() {
     },
   ]
 
-  // Botão de Bônus Residual separado para aplicar cores especiais
-  const residualBonusItem = {
-    title: "Bônus Residual",
-    icon: Percent,
-    href: "/dashboard/residual-bonus",
+  const handleLogout = () => {
+    // Aqui você adicionaria a lógica para fazer logout
+    router.push("/")
+  }
+
+  // Se a barra não estiver visível, mostrar apenas o botão para abri-la
+  if (!isVisible) {
+    return (
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={toggleSidebar}
+        className="fixed top-4 left-4 z-50 bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 rounded-full shadow-lg"
+      >
+        <ChevronRight className="h-5 w-5" />
+        <span className="sr-only">Abrir menu</span>
+      </Button>
+    )
   }
 
   return (
-    <aside
-      className={`fixed left-0 top-0 h-screen bg-slate-900 border-r border-slate-800 flex flex-col z-50 transition-all duration-300 ${
-        isVisible ? "w-64" : "w-0 -translate-x-full"
-      }`}
-    >
+    <aside className="fixed top-0 left-0 z-40 h-screen w-64 bg-slate-900 border-r border-slate-800 transition-all duration-300 ease-in-out flex flex-col">
       <div className="p-4 border-b border-slate-800 flex items-center justify-between">
-        <div className="flex justify-center">
-          <Image
-            src="/images/amazon-mining-logo.png"
-            alt="Amazon Mining Logo"
-            width={40}
-            height={40}
-            className="rounded-full border-2 border-emerald-500"
-          />
-        </div>
-
+        <FloatingLogo size="small" />
         <Button variant="ghost" size="icon" onClick={toggleSidebar} className="text-slate-400 hover:text-white">
           <ChevronLeft className="h-5 w-5" />
           <span className="sr-only">Fechar menu</span>
@@ -106,44 +109,39 @@ export function DashboardSidebar() {
         <nav className="px-4">
           <ul className="space-y-1">
             {menuItems.map((item) => {
-              const Icon = item.icon
-              const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname?.startsWith(item.href))
+              const isActive = pathname === item.href
 
               return (
-                <li key={item.href}>
+                <li key={item.title}>
                   <Link
                     href={item.href}
                     className={cn(
-                      "flex items-center px-3 py-2 rounded-md transition-colors",
+                      "flex items-center gap-3 px-3 py-2 rounded-md transition-colors",
                       isActive
                         ? "bg-emerald-500/10 text-emerald-400"
                         : "text-slate-400 hover:text-white hover:bg-slate-800",
                     )}
                   >
-                    <Icon className="h-5 w-5 mr-3" />
+                    <item.icon className="h-5 w-5 flex-shrink-0" />
                     <span>{item.title}</span>
                   </Link>
                 </li>
               )
             })}
-
-            {/* Botão de Bônus Residual com cores especiais */}
-            <li>
-              <Link
-                href={residualBonusItem.href}
-                className={cn(
-                  "flex items-center px-3 py-2 rounded-md transition-colors",
-                  pathname === residualBonusItem.href || pathname?.startsWith(residualBonusItem.href)
-                    ? "bg-gradient-to-r from-cyan-500/20 to-emerald-500/20 text-cyan-300"
-                    : "text-cyan-400 hover:bg-gradient-to-r hover:from-cyan-500/10 hover:to-emerald-500/10 hover:text-cyan-300",
-                )}
-              >
-                <residualBonusItem.icon className="h-5 w-5 mr-3 text-cyan-400" />
-                <span className="font-medium">{residualBonusItem.title}</span>
-              </Link>
-            </li>
           </ul>
         </nav>
+      </div>
+
+      {/* Botão de Sair em um container separado no final da barra */}
+      <div className="p-4 border-t border-slate-800">
+        <Button
+          variant="ghost"
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-md transition-colors text-red-400 hover:bg-red-500/10 hover:text-red-300"
+          onClick={handleLogout}
+        >
+          <LogOut className="h-5 w-5 flex-shrink-0" />
+          <span>Sair</span>
+        </Button>
       </div>
     </aside>
   )

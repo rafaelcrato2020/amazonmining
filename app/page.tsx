@@ -4,8 +4,6 @@ import { RewardsSection } from "@/components/rewards-section"
 import { CareerSection } from "@/components/career-section"
 import { Footer } from "@/components/footer"
 import { AuthModal } from "@/components/auth-modal"
-import { ResidualBonusSection } from "@/components/residual-bonus-section"
-import { TelegramPreLaunchBanner } from "@/components/telegram-pre-launch-banner"
 import Image from "next/image"
 
 export default function Home() {
@@ -36,8 +34,6 @@ export default function Home() {
         <HeroSection />
         <FeaturesSection />
         <RewardsSection />
-        <ResidualBonusSection />
-        <TelegramPreLaunchBanner />
         <CareerSection />
       </main>
 

@@ -1,18 +1,24 @@
 "use client"
 
 import type { ReactNode } from "react"
+import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar"
 import { DashboardHeader } from "@/components/dashboard/dashboard-header"
 import { MobileMenu } from "@/components/dashboard/mobile-menu"
+import { useSidebar } from "@/contexts/sidebar-context"
+import { cn } from "@/lib/utils"
 
 interface DashboardLayoutProps {
   children: ReactNode
 }
 
-// Este componente não é mais usado diretamente, mas mantemos para compatibilidade
 export function DashboardLayout({ children }: DashboardLayoutProps) {
+  const { isVisible, isOpen } = useSidebar()
+
   return (
     <div className="min-h-screen bg-slate-950 text-white">
-      <div>
+      <DashboardSidebar />
+
+      <div className={cn("transition-all duration-300 ease-in-out", isVisible ? (isOpen ? "ml-64" : "ml-20") : "ml-0")}>
         <div className="md:hidden">
           <MobileMenu />
         </div>
